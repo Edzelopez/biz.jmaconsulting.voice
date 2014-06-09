@@ -2,7 +2,7 @@
 <extension key="org.gsoc.phone" type="module">
   <file>phone</file>
   <name>Phone</name>
-  <description>This module enable voice broadcasting feature into CIVICRM.</description>
+  <description>This module enable voice broadcasting feature into CIVICRM</description>
   <license>AGPL-3.0</license>
   <maintainer>
     <author>Md Eftakhairul Islam</author>
@@ -18,4 +18,7 @@
   <civix>
     <namespace>CRM/Phone</namespace>
   </civix>
+  <urls>
+    <url desc="Documentation">https://github.com/eftakhairul/biz.jmaconsulting.voice</url>
+  </urls>
 </extension>
