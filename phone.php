@@ -25,9 +25,15 @@ function phone_civicrm_xmlMenu(&$files) {
 /**
  * Implementation of hook_civicrm_install
  *
+ * It create two tables: civicrm_voice_response,  civicrm_voice_broadcast
+ *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_install
  */
 function phone_civicrm_install() {
+    // Create required tables for Stripe.
+  require_once "CRM/Core/DAO.php";
+  CRM_Core_DAO::executeQuery("");
+
   return _phone_civix_civicrm_install();
 }
 
