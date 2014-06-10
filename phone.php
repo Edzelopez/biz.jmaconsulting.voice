@@ -26,24 +26,37 @@ function phone_civicrm_xmlMenu(&$files) {
  * Implementation of hook_civicrm_install
  *
  * It create two tables: civicrm_voice_response,  civicrm_voice_broadcast
+ * and then install the  extension
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_install
  */
-function phone_civicrm_install() {
-    // Create required tables for Stripe.
-  require_once "CRM/Core/DAO.php";
-  CRM_Core_DAO::executeQuery("");
+function phone_civicrm_install()
+{
+    foreach (glob(__DIR__ . '/SQL/*_install.sql') as $file)
+    {
+        CRM_Utils_File::sourceSQLFile(CIVICRM_DSN, $file);
+    }
 
-  return _phone_civix_civicrm_install();
+     return _phone_civix_civicrm_install();
 }
 
 /**
  * Implementation of hook_civicrm_uninstall
  *
+ * it basically drop the tables civicrm_voice_response,  civicrm_voice_broadcast
+ * and then uninstall the extension
+ *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_uninstall
  */
-function phone_civicrm_uninstall() {
-  return _phone_civix_civicrm_uninstall();
+function phone_civicrm_uninstall()
+{
+
+    foreach (glob(__DIR__ . '/SQL/*_uninstall.sql') as $file)
+    {
+        CRM_Utils_File::sourceSQLFile(CIVICRM_DSN, $file);
+    }
+
+   return _phone_civix_civicrm_uninstall();
 }
 
 /**
@@ -60,8 +73,9 @@ function phone_civicrm_enable() {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_disable
  */
-function phone_civicrm_disable() {
-  return _phone_civix_civicrm_disable();
+function phone_civicrm_disable()
+{
+    return _phone_civix_civicrm_disable();
 }
 
 /**
