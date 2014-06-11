@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <extension key="biz.jmaconsulting.voice" type="module">
   <file>voice</file>
-  <name>FIXME</name>
-  <description>FIXME</description>
+  <name>Voice Broadcast</name>
+  <description>It enables you to broadcast voice message to a group of user.</description>
   <license>AGPL-3.0</license>
   <maintainer>
     <author>Md Eftakhairul Islam</author>
@@ -18,4 +18,7 @@
   <civix>
     <namespace>CRM/Voice</namespace>
   </civix>
+  <urls>
+    <url desc="Support">https://github.com/JMAConsulting/biz.jmaconsulting.voice/issues?state=open</url>
+  </urls>
 </extension>
