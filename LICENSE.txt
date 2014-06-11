@@ -1,4 +1,4 @@
-Package: org.gsoc.phone
+Package: biz.jmaconsulting.voice
 Copyright (C) 2014, Md Eftakhairul Islam <eftakhairul@gmail.com>
 Licensed under the GNU Affero Public License 3.0 (below).
 

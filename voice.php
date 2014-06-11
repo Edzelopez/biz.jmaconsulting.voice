@@ -1,14 +1,14 @@
 <?php
 
-require_once 'phone.civix.php';
+require_once 'voice.civix.php';
 
 /**
  * Implementation of hook_civicrm_config
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_config
  */
-function phone_civicrm_config(&$config) {
-  _phone_civix_civicrm_config($config);
+function voice_civicrm_config(&$config) {
+  _voice_civix_civicrm_config($config);
 }
 
 /**
@@ -18,45 +18,26 @@ function phone_civicrm_config(&$config) {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_xmlMenu
  */
-function phone_civicrm_xmlMenu(&$files) {
-  _phone_civix_civicrm_xmlMenu($files);
+function voice_civicrm_xmlMenu(&$files) {
+  _voice_civix_civicrm_xmlMenu($files);
 }
 
 /**
  * Implementation of hook_civicrm_install
  *
- * It create two tables: civicrm_voice_response,  civicrm_voice_broadcast
- * and then install the  extension
- *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_install
  */
-function phone_civicrm_install()
-{
-    foreach (glob(__DIR__ . '/SQL/*_install.sql') as $file)
-    {
-        CRM_Utils_File::sourceSQLFile(CIVICRM_DSN, $file);
-    }
-
-     return _phone_civix_civicrm_install();
+function voice_civicrm_install() {
+  return _voice_civix_civicrm_install();
 }
 
 /**
  * Implementation of hook_civicrm_uninstall
  *
- * it basically drop the tables civicrm_voice_response,  civicrm_voice_broadcast
- * and then uninstall the extension
- *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_uninstall
  */
-function phone_civicrm_uninstall()
-{
-
-    foreach (glob(__DIR__ . '/SQL/*_uninstall.sql') as $file)
-    {
-        CRM_Utils_File::sourceSQLFile(CIVICRM_DSN, $file);
-    }
-
-   return _phone_civix_civicrm_uninstall();
+function voice_civicrm_uninstall() {
+  return _voice_civix_civicrm_uninstall();
 }
 
 /**
@@ -64,8 +45,8 @@ function phone_civicrm_uninstall()
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_enable
  */
-function phone_civicrm_enable() {
-  return _phone_civix_civicrm_enable();
+function voice_civicrm_enable() {
+  return _voice_civix_civicrm_enable();
 }
 
 /**
@@ -73,9 +54,8 @@ function phone_civicrm_enable() {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_disable
  */
-function phone_civicrm_disable()
-{
-    return _phone_civix_civicrm_disable();
+function voice_civicrm_disable() {
+  return _voice_civix_civicrm_disable();
 }
 
 /**
@@ -89,8 +69,8 @@ function phone_civicrm_disable()
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_upgrade
  */
-function phone_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
-  return _phone_civix_civicrm_upgrade($op, $queue);
+function voice_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
+  return _voice_civix_civicrm_upgrade($op, $queue);
 }
 
 /**
@@ -101,8 +81,8 @@ function phone_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_managed
  */
-function phone_civicrm_managed(&$entities) {
-  return _phone_civix_civicrm_managed($entities);
+function voice_civicrm_managed(&$entities) {
+  return _voice_civix_civicrm_managed($entities);
 }
 
 /**
@@ -114,8 +94,8 @@ function phone_civicrm_managed(&$entities) {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_caseTypes
  */
-function phone_civicrm_caseTypes(&$caseTypes) {
-  _phone_civix_civicrm_caseTypes($caseTypes);
+function voice_civicrm_caseTypes(&$caseTypes) {
+  _voice_civix_civicrm_caseTypes($caseTypes);
 }
 
 /**
@@ -123,6 +103,6 @@ function phone_civicrm_caseTypes(&$caseTypes) {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_alterSettingsFolders
  */
-function phone_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
-  _phone_civix_civicrm_alterSettingsFolders($metaDataFolders);
+function voice_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
+  _voice_civix_civicrm_alterSettingsFolders($metaDataFolders);
 }

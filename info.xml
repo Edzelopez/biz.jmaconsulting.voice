@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
-<extension key="org.gsoc.phone" type="module">
-  <file>phone</file>
-  <name>Phone</name>
-  <description>This module enable voice broadcasting feature into CIVICRM</description>
+<extension key="biz.jmaconsulting.voice" type="module">
+  <file>voice</file>
+  <name>FIXME</name>
+  <description>FIXME</description>
   <license>AGPL-3.0</license>
   <maintainer>
     <author>Md Eftakhairul Islam</author>
     <email>eftakhairul@gmail.com</email>
   </maintainer>
-  <releaseDate>2014-06-09</releaseDate>
+  <releaseDate>2014-06-11</releaseDate>
   <version>1.0</version>
   <develStage>alpha</develStage>
   <compatibility>
@@ -16,9 +16,6 @@
   </compatibility>
   <comments>This is a new, undeveloped module</comments>
   <civix>
-    <namespace>CRM/Phone</namespace>
+    <namespace>CRM/Voice</namespace>
   </civix>
-  <urls>
-    <url desc="Documentation">https://github.com/eftakhairul/biz.jmaconsulting.voice</url>
-  </urls>
 </extension>
