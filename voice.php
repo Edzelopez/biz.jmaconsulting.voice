@@ -25,19 +25,36 @@ function voice_civicrm_xmlMenu(&$files) {
 /**
  * Implementation of hook_civicrm_install
  *
+ * * It create all the tables and calls civix install function
+ *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_install
  */
-function voice_civicrm_install() {
-  return _voice_civix_civicrm_install();
+function voice_civicrm_install()
+{
+
+    foreach (glob(__DIR__ . '/SQL/*_install.sql') as $file)
+    {
+        CRM_Utils_File::sourceSQLFile(CIVICRM_DSN, $file);
+    }
+
+    return _voice_civix_civicrm_install();
 }
 
 /**
  * Implementation of hook_civicrm_uninstall
  *
+ * It drops all the tables and calls civix uninstall function
+ *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_uninstall
  */
 function voice_civicrm_uninstall() {
-  return _voice_civix_civicrm_uninstall();
+
+    foreach (glob(__DIR__ . '/SQL/*_uninstall.sql') as $file)
+    {
+        CRM_Utils_File::sourceSQLFile(CIVICRM_DSN, $file);
+    }
+
+    return _voice_civix_civicrm_uninstall();
 }
 
 /**
