@@ -327,7 +327,7 @@ class Voice extends CRM_Core_DAO
                                                            'where'          => 'civicrm_voice_broadcast.voice_message_file',
                                                            'headerPattern'  => '',
                                                            'dataPattern'    => '',
-
+                                                           ),
                               'created_at' => array('name'          => 'created_at',
                                                     'type'          => CRM_Utils_Type::T_DATETIME,
                                                     'title'         => ts('Job End Date') ,
@@ -337,8 +337,8 @@ class Voice extends CRM_Core_DAO
                                                     'headerPattern' => '',
                                                     'dataPattern'   => '',
                                                    ) ,
-                              ),
-        );
+                              );
+
     }
 
     return self::$_fields;
