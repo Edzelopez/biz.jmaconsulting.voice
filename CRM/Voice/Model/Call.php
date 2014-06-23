@@ -9,7 +9,7 @@
 namespace CRM\Voice\Model;
 
 
-class Voice extends AbstractModel
+class Call extends AbstractModel
 {
 
     public function __construct($dao = null)
@@ -17,7 +17,7 @@ class Voice extends AbstractModel
         if ($dao) {
             $this->setDao($dao);
         } else {
-            $this->setDao(new \CRM\Voice\DAO\Voice());
+            $this->setDao(new \CRM\Voice\DAO\Call());
         }
     }
 } 
