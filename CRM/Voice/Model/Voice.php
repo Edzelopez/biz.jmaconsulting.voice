@@ -17,7 +17,7 @@ class Voice extends AbstractModel
         if ($dao) {
             $this->setDao($dao);
         } else {
-            $this->setDao(new Voice_Broadcast_Dao_Voice());
+            $this->setDao(new CRM\Voice\DAO\Voice());
         }
     }
 } 
