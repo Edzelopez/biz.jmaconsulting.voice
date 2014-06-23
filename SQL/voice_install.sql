@@ -51,15 +51,17 @@ CREATE TABLE IF NOT EXISTS `civicrm_voice_broadcast` (
 CREATE TABLE IF NOT EXISTS `civicrm_voice_broadcast_call` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `job_id` int(11) NOT NULL,
-  `phone_id` int(11) NOT NULL,
   `contact_id` int(11) NOT NULL,
+  `phone_id` int(11) NOT NULL,
   `disposition` varchar(10) DEFAULT NULL,
   `duration` varchar(10) DEFAULT NULL,
   `cost` varchar(10) DEFAULT NULL,
-  `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `voice_id` (`job_id`,`phone_id`,`contact_id`)
+  KEY `voice_id` (`job_id`,`phone_id`),
+  KEY `contact_id` (`contact_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+SET FOREIGN_KEY_CHECKS=1;
 
 CREATE TABLE IF NOT EXISTS `civicrm_voice_broadcast_job` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
