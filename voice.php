@@ -25,7 +25,7 @@ function voice_civicrm_xmlMenu(&$files) {
 /**
  * Implementation of hook_civicrm_install
  *
- * * It create all the tables and calls civix install function
+ * It create all the tables and calls civix install function
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_install
  */
