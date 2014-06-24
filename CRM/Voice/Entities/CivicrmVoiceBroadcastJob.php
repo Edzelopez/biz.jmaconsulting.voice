@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class CivicrmVoiceBroadcastJob
 {
+
     /**
      * @var integer
      *
@@ -91,5 +92,181 @@ class CivicrmVoiceBroadcastJob
      */
     private $jobLimit = '0';
 
+    /**
+     * @param boolean $isTest
+     */
+    public function setIsTest($isTest)
+    {
+        $this->isTest = $isTest;
+        return $this;
+    }
 
+    /**
+     * @return boolean
+     */
+    public function getIsTest()
+    {
+        return $this->isTest;
+    }
+
+    /**
+     * @param \DateTime $endDate
+     */
+    public function setEndDate($endDate)
+    {
+        $this->endDate = $endDate;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getEndDate()
+    {
+        return $this->endDate;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $jobLimit
+     */
+    public function setJobLimit($jobLimit)
+    {
+        $this->jobLimit = $jobLimit;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getJobLimit()
+    {
+        return $this->jobLimit;
+    }
+
+    /**
+     * @param int $jobOffset
+     */
+    public function setJobOffset($jobOffset)
+    {
+        $this->jobOffset = $jobOffset;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getJobOffset()
+    {
+        return $this->jobOffset;
+    }
+
+    /**
+     * @param string $jobType
+     */
+    public function setJobType($jobType)
+    {
+        $this->jobType = $jobType;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getJobType()
+    {
+        return $this->jobType;
+    }
+
+    /**
+     * @param int $parentId
+     */
+    public function setParentId($parentId)
+    {
+        $this->parentId = $parentId;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getParentId()
+    {
+        return $this->parentId;
+    }
+
+    /**
+     * @param \DateTime $scheduledDate
+     */
+    public function setScheduledDate($scheduledDate)
+    {
+        $this->scheduledDate = $scheduledDate;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getScheduledDate()
+    {
+        return $this->scheduledDate;
+    }
+
+    /**
+     * @param \DateTime $startDate
+     */
+    public function setStartDate($startDate)
+    {
+        $this->startDate = $startDate;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getStartDate()
+    {
+        return $this->startDate;
+    }
+
+    /**
+     * @param string $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param int $voiceId
+     */
+    public function setVoiceId($voiceId)
+    {
+        $this->voiceId = $voiceId;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getVoiceId()
+    {
+        return $this->voiceId;
+    }
 }
