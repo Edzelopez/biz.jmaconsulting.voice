@@ -50,4 +50,79 @@ class CivicrmVoiceBroadcastSpool
     private $removedAt;
 
 
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $jobId
+     */
+    public function setJobId($jobId)
+    {
+        $this->jobId = $jobId;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getJobId()
+    {
+        return $this->jobId;
+    }
+
+    /**
+     * @param string $recipientNumber
+     */
+    public function setRecipientNumber($recipientNumber)
+    {
+        $this->recipientNumber = $recipientNumber;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRecipientNumber()
+    {
+        return $this->recipientNumber;
+    }
+
+    /**
+     * @param \DateTime $removedAt
+     */
+    public function setRemovedAt($removedAt)
+    {
+        $this->removedAt = $removedAt;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getRemovedAt()
+    {
+        return $this->removedAt;
+    }
+
+    /**
+     * @param \DateTime $addedAt
+     */
+    public function setAddedAt($addedAt)
+    {
+        $this->addedAt = $addedAt;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getAddedAt()
+    {
+        return $this->addedAt;
+    }
 }
