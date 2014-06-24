@@ -17,7 +17,7 @@ class Call extends AbstractModel
         if ($dao) {
             $this->setDao($dao);
         } else {
-            $this->setDao(new \CRM\Voice\DAO\Call());
+            $this->setDao(new \CRM\Voice\Entities\CivicrmVoiceBroadcastCall());
         }
     }
 } 
