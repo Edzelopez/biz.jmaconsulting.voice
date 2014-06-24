@@ -52,4 +52,80 @@ class CivicrmVoiceBraodcastGroup
     private $entityTable;
 
 
+
+    /**
+     * @return int
+     */
+    public function getEntityId()
+    {
+        return $this->entityId;
+    }
+
+    /**
+     * @param int $entityTable
+     */
+    public function setEntityTable($entityTable)
+    {
+        $this->entityTable = $entityTable;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getEntityTable()
+    {
+        return $this->entityTable;
+    }
+
+    /**
+     * @param string $groupType
+     */
+    public function setGroupType($groupType)
+    {
+        $this->groupType = $groupType;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGroupType()
+    {
+        return $this->groupType;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $voiceId
+     */
+    public function setVoiceId($voiceId)
+    {
+        $this->voiceId = $voiceId;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getVoiceId()
+    {
+        return $this->voiceId;
+    }
 }
