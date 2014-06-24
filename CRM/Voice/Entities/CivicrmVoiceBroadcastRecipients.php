@@ -22,70 +22,6 @@ class CivicrmVoiceBroadcastRecipients
     private $id;
 
     /**
-     * @param int $contactId
-     */
-    public function setContactId($contactId)
-    {
-        $this->contactId = $contactId;
-    }
-
-    /**
-     * @return int
-     */
-    public function getContactId()
-    {
-        return $this->contactId;
-    }
-
-    /**
-     * @param int $phoneId
-     */
-    public function setPhoneId($phoneId)
-    {
-        $this->phoneId = $phoneId;
-    }
-
-    /**
-     * @return int
-     */
-    public function getPhoneId()
-    {
-        return $this->phoneId;
-    }
-
-    /**
-     * @param int $voiceId
-     */
-    public function setVoiceId($voiceId)
-    {
-        $this->voiceId = $voiceId;
-    }
-
-    /**
-     * @return int
-     */
-    public function getVoiceId()
-    {
-        return $this->voiceId;
-    }
-
-    /**
-     * @param int $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
      * @var integer
      *
      * @ORM\Column(name="voice_id", type="integer", nullable=false)
@@ -106,5 +42,71 @@ class CivicrmVoiceBroadcastRecipients
      */
     private $phoneId;
 
+    /**
+     * @param int $contactId
+     */
+    public function setContactId($contactId)
+    {
+        $this->contactId = $contactId;
+        return $this;
+    }
 
+    /**
+     * @return int
+     */
+    public function getContactId()
+    {
+        return $this->contactId;
+    }
+
+    /**
+     * @param int $phoneId
+     */
+    public function setPhoneId($phoneId)
+    {
+        $this->phoneId = $phoneId;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPhoneId()
+    {
+        return $this->phoneId;
+    }
+
+    /**
+     * @param int $voiceId
+     */
+    public function setVoiceId($voiceId)
+    {
+        $this->voiceId = $voiceId;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getVoiceId()
+    {
+        return $this->voiceId;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 }
