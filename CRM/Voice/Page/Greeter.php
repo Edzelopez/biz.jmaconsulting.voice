@@ -8,6 +8,8 @@ class CRM_Voice_Page_Greeter extends CRM_Core_Page
   {
       $entityManager  = require_once __DIR__. '/../../../bootstrap.php';
 
+
+
       $recipientEntity = new \CRM\Voice\Entities\CivicrmVoiceBroadcastRecipients();
       $recipientEntity->setContactId(1);
       $recipientEntity->setPhoneId(1);
