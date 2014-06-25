@@ -9,8 +9,8 @@ use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 
-$paths = array(__DIR__ . '/CRM/Voice/Entities');
-$isDevMode = true;
+$paths      = array(__DIR__ . '/CRM/Voice/Entities');
+$isDevMode  = true;
 
 // the connection configuration
 $dbParams = array(
