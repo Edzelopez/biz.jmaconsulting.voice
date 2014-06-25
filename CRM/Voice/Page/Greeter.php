@@ -1,20 +1,19 @@
 <?php
 
 require_once 'CRM/Core/Page.php';
-require_once __DIR__. '/../../../bootstrap.php';
-
-
 
 class CRM_Voice_Page_Greeter extends CRM_Core_Page
 {
-  function run()
+  public function run()
   {
-      global $entityManager;
+      $entityManager  = require_once __DIR__. '/../../../bootstrap.php';
 
       $recipientEntity = new \CRM\Voice\Entities\CivicrmVoiceBroadcastRecipients();
       $recipientEntity->setContactId(1);
       $recipientEntity->setPhoneId(1);
       $recipientEntity->setVoiceId(1);
+
+
 
       $entityManager->persist($recipientEntity);
       $entityManager->flush();
