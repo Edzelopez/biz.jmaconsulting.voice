@@ -17,7 +17,7 @@ $isDevMode  = true;
 $dbParams = array('driver'   => 'pdo_mysql',
                   'user'     => 'root',
                   'password' => 'commonrbs',
-                  'dbname'   => 'test_civicrm'
+                  'dbname'   => 'civicrm'
 );
 
 $config = Setup::createConfiguration($isDevMode);
