@@ -9,7 +9,7 @@
 namespace CRM\VoiceBroadcast\BAO;
 
 
-class CRM_VoiceBroadcast_BAO_VoiceBroadcsat
+class CRM_VoiceBroadcast_BAO_VoiceBroadcast
 {
     static function processQueue($mode = NULL)
     {
