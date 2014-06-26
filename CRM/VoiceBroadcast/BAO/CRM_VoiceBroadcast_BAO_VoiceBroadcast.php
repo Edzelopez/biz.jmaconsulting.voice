@@ -13,7 +13,13 @@ class CRM_VoiceBroadcast_BAO_VoiceBroadcast
 {
     static function processQueue($mode = NULL)
     {
-        //do dome work
+        $text = 'voice is broadcasted';
+        $logFileName = empty($path)? "/system_log.text" : $path . "/system_log.text";
+        $logger = fopen($logFileName, "a") or die("Could not open log file.");
+
+        fwrite($logger, date("d-m-Y, H:i")." - $text\n") or die("Could not write file!");
+        fclose($logger);
+
         return TRUE;
     }
 } 
