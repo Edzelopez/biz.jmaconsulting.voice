@@ -3,6 +3,10 @@
 /**
  * Job.ProcessVoicebroadcast API
  *
+ *
+ * This is basically an API which start processing
+ * voice broadcasting as well as cron job
+ *
  * @param array $params
  * @return array API result descriptor
  * @see civicrm_api3_create_success
