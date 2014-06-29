@@ -13,7 +13,7 @@
  * @see civicrm_api3_create_error
  * @throws API_Exception
  */
-function civicrm_api3_job_processvoicebroadcast($params) {
+function civicrm_api3_job_processvoicebroadcast($params = array()) {
     \CRM\VoiceBroadcast\BAO\CRM_VoiceBroadcast_BAO_VoiceBroadcast::processQueue();
 }
 
