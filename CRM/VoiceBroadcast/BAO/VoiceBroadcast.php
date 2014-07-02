@@ -6,6 +6,8 @@
  * Time: 11:48 AM
  */
 
+
+
 namespace CRM\VoiceBroadcast\BAO;
 
 
@@ -14,14 +16,22 @@ class VoiceBroadcast
     static function processQueue($path = NULL)
     {
 
-        $file = './people.txt';
-        // Open the file to get existing content
-        $current = file_get_contents($file);
-        // Append a new person to the file
-        $current .= "John Smith\n";
-        // Write the contents back to the file
-        file_put_contents($file, $current);
+      $entityManager  = require __DIR__. '/../../../bootstrap.php';
 
-        return TRUE;
+
+
+      $recipientEntity = new \CRM\Voice\Entities\CivicrmVoiceBroadcastRecipients();
+      $recipientEntity->setContactId(2);
+      $recipientEntity->setPhoneId(2);
+      $recipientEntity->setVoiceId(2);
+
+
+
+      $entityManager->persist($recipientEntity);
+      $entityManager->flush();
+      echo 'done'; exit;
+
+
+
     }
 } 
