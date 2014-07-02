@@ -17,7 +17,8 @@
     "symfony/event-dispatcher": "2.3.*",
     "symfony/serializer": "2.3.*",
     "symfony/security": "2.3.*",
-    "symfony/validator": "2.3.*"
+    "symfony/validator": "2.3.*",
+    "swiftmailer/swiftmailer": "5.2.*@dev"
   }
 }
 
