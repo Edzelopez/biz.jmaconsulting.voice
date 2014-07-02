@@ -2,6 +2,7 @@
 
 // bootstrap.php
 require_once  __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/DB_Settings.php';
 
 
 use Doctrine\ORM\Tools\Setup;
@@ -12,13 +13,7 @@ use Doctrine\Common\Annotations\AnnotationRegistry;
 
 $paths      = array(__DIR__ . '/CRM/Voice/Entities');
 $isDevMode  = true;
-
-// the connection configuration
-$dbParams = array('driver'   => 'pdo_mysql',
-                  'user'     => 'root',
-                  'password' => 'commonrbs',
-                  'dbname'   => 'civicrm'
-);
+$dbSetting  = new DB_Settings();
 
 $config = Setup::createConfiguration($isDevMode);
 $driver = new AnnotationDriver(new AnnotationReader(), $paths);
@@ -27,8 +22,11 @@ $driver = new AnnotationDriver(new AnnotationReader(), $paths);
 AnnotationRegistry::registerLoader('class_exists');
 $config->setMetadataDriverImpl($driver);
 
-$entityManager = EntityManager::create($dbParams, $config);
+//Creating Entity Manager
+$entityManager = EntityManager::create($dbSetting->toDoctrineArray(), $config);
 
+
+//Setting up Enu, type
 $conn = $entityManager->getConnection();
 $conn->getDatabasePlatform()->registerDoctrineTypeMapping('enum','string');
 
