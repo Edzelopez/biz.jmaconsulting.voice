@@ -65,15 +65,14 @@ class VoiceBroadcast
 
         // Split up the parent jobs into multiple child jobs
         $mailerJobSize = (property_exists($config, 'mailerJobSize')) ? $config->mailerJobSize : NULL;
-        CRM_Mailing_BAO_MailingJob::runJobs_pre($mailerJobSize, $mode);
-        CRM_Mailing_BAO_MailingJob::runJobs(NULL, $mode);
-        CRM_Mailing_BAO_MailingJob::runJobs_post($mode);
+        VoiceBroadcastJob::runJobs_pre($mailerJobSize, $mode);
+        VoiceBroadcastJob::runJobs(NULL, $mode);
+        VoiceBroadcastJob::runJobs_post($mode);
 
         // lets release the global cron lock if we do have one
         if ($gotCronLock) {
           $cronLock->release();
         }
-
 
         return TRUE;
     }
