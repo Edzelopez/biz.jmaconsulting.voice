@@ -27,11 +27,9 @@ class Spool
 
     public function spoolJobs()
     {
-
     }
 
     public function unSpoolJobs()
     {
-
     }
 } 

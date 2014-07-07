@@ -10,15 +10,14 @@
 
 namespace CRM\VoiceBroadcast\BAO;
 
-
-
-
+require_once 'CRM/Core/Config.php';
 
 class VoiceBroadcast
 {
     static function processQueue($mode = NULL)
     {
 
+        //Doctrine Entity
         $entityManager  = require __DIR__. '/../../../bootstrap.php';
         $config         = &CRM_Core_Config::singleton();
 
