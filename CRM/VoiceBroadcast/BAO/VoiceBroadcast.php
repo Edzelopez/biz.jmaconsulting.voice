@@ -60,13 +60,19 @@ class VoiceBroadcast
           }
         }
 
-        // load bootstrap to call hooks
+        //Load bootstrap to call hooks
 
         // Split up the parent jobs into multiple child jobs
         $mailerJobSize = (property_exists($config, 'mailerJobSize')) ? $config->mailerJobSize : NULL;
-        VoiceBroadcastJob::runJobs_pre($mailerJobSize, $mode);
-        VoiceBroadcastJob::runJobs(NULL, $mode);
-        VoiceBroadcastJob::runJobs_post($mode);
+
+        //Pre Job: Split schedule and enqueue the task
+        VoiceBroadcastJob::runJobs_pre($mailerJobSize, $mode, $entityManager);
+
+        //Process the job
+        VoiceBroadcastJob::runJobs(NULL, $mode, $entityManager);
+
+        //Status update after the job
+        VoiceBroadcastJob::runJobs_post($mode, $entityManager);
 
         // lets release the global cron lock if we do have one
         if ($gotCronLock) {
