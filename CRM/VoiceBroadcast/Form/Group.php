@@ -196,6 +196,7 @@ class CRM_VoiceBroadcast_Form_Group extends CRM_Contact_Form_Task {
 
     //dedupe on email option
     $this->addElement('checkbox', 'is_public', ts('Phone'), ts(' Is Public'));
+    $defaults['is_public'] = true;
 
     $phone_location = array(1 => 'Home', 2 => 'Main', 3 => 'Other', 4 => 'Work');
     $this->addElement('select','phone_location','Phone Location: ',$phone_location);
@@ -308,6 +309,8 @@ class CRM_VoiceBroadcast_Form_Group extends CRM_Contact_Form_Task {
     );
 
     $this->addButtons($buttons);
+
+    $this->setDefaults($defaults);
 
     $this->assign('groupCount', count($groups));
     $this->assign('mailingCount', count($mailings));
