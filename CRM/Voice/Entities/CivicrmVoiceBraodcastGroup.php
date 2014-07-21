@@ -62,6 +62,15 @@ class CivicrmVoiceBraodcastGroup
     }
 
     /**
+     * @param int $entityId
+     */
+    public function setEntityId($entityId)
+    {
+        $this->entityId = $entityId;
+        return $this;
+    }
+
+    /**
      * @param int $entityTable
      */
     public function setEntityTable($entityTable)
