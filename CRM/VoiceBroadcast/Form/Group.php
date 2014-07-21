@@ -186,6 +186,7 @@ class CRM_VoiceBroadcast_Form_Group extends CRM_Contact_Form_Task {
 
     $hiddenMailingGroup = NULL;
     $campaignId         = NULL;
+    $defaults           = array();
 
     //CRM-7362 --add campaigns.
     if ($this->_mailingID) {
@@ -738,8 +739,8 @@ class CRM_VoiceBroadcast_Form_Group extends CRM_Contact_Form_Task {
     if (!empty($params['scheduled_date']) && $params['scheduled_date'] != 'null')
     {
       $voiceBroadCastJob = $entityManager->getRepository('CRM\Voice\Entities\CivicrmVoiceBroadcastJob')->findOneBy(array('voice_id' => $voiceEntity->getId(),
-                                                                                                                      'status'   => 'Scheduled',
-                                                                                                                       'is_test' => false));
+                                                                                                                         'status'   => 'Scheduled',
+                                                                                                                         'is_test' => false));
 
        if ( !empty($voiceBroadCastJob) ) {
           $voiceBroadCastJob->setScheduledDate(new \DateTime(strtotime($params['scheduled_date'])));

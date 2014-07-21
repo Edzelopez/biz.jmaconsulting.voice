@@ -64,34 +64,26 @@ class CRM_VoiceBroadcast_Form_Settings extends CRM_Core_Form {
    *
    * @return None
    */
-  function setDefaultValues() {
+  function setDefaultValues()
+  {
+    $entityManager = require __DIR__. '/../../../bootstrap.php';
     $mailingID = CRM_Utils_Request::retrieve('mid', 'Integer', $this, FALSE, NULL);
     $count = $this->get('count');
     $this->assign('count', $count);
     $defaults = array();
 
-    $componentFields = array(
-      'reply_id' => 'Reply',
-      'optout_id' => 'OptOut',
-      'unsubscribe_id' => 'Unsubscribe',
-      'resubscribe_id' => 'Resubscribe',
-    );
 
-    foreach ($componentFields as $componentVar => $componentType) {
-      $defaults[$componentVar] = CRM_Mailing_PseudoConstant::defaultComponent($componentType, '');
-    }
 
     if ($mailingID) {
-      $dao = new CRM_Mailing_DAO_Mailing();
-      $dao->id = $mailingID;
-      $dao->find(TRUE);
-      // override_verp must be flipped, as in 3.2 we reverted
-      // its meaning to ‘should CiviMail manage replies?’ – i.e.,
-      // ‘should it *not* override Reply-To: with VERP-ed address?’
-      $dao->override_verp = !$dao->override_verp;
-      $dao->storeValues($dao, $defaults);
-      $defaults['visibility'] = $dao->visibility;
+      $voiceBroadCast = $entityManager->getRepository('CRM\Voice\Entities\CivicrmVoiceBroadcast')->findOneBy(array('voice_id' => $mailingID ));
+
+      if(!empty($voiceBroadCastJob)) {
+        $defaults['is_track_call_duration']    = $voiceBroadCast->getIsTrackCallDuration();
+        $defaults['is_track_call_disposition'] = $voiceBroadCast->getIsTrackCallDisposition();
+        $defaults['is_track_call_cost']        = $voiceBroadCast->getIsTrackCallCost();
+      }
     }
+
     return $defaults;
   }
 
@@ -110,13 +102,13 @@ class CRM_VoiceBroadcast_Form_Settings extends CRM_Core_Form {
     );
 
     $this->add('checkbox', 'is_track_call_disposition', '');
-    $defaults['is_track_call_disposition'] = FALSE;
+    $defaults['is_track_call_disposition']  = false;
 
     $this->add('checkbox', 'is_track_call_duration', '');
-    $defaults['is_track_call_duration'] = TRUE;
+    $defaults['is_track_call_duration']     = false;
 
     $this->add('checkbox', 'is_track_call_cost', '');
-    $defaults['is_track_call_cost'] = TRUE;
+    $defaults['is_track_call_cost']         = false;
 
     $buttons = array(
       array('type' => 'back',
