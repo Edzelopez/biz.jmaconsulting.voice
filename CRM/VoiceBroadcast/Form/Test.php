@@ -70,7 +70,7 @@ class CRM_VoiceBroadcast_Form_Test extends CRM_Core_Form {
 
   public function buildQuickForm() {
     $session = CRM_Core_Session::singleton();
-    $this->add('text', 'test_email', ts('Send to This Address'));
+    $this->add('text', 'test_voice', ts('Send to this Number'));
     $defaults['test_email'] = $session->get('ufUniqID');
     $qfKey = $this->get('qfKey');
 
@@ -81,7 +81,8 @@ class CRM_VoiceBroadcast_Form_Test extends CRM_Core_Form {
     );
     $this->setDefaults($defaults);
 
-    $this->add('submit', 'sendtest', ts('Send a Test Mailing'));
+    $this->add('submit', 'sendtest', ts('Send a Test Voice'));
+    $this->add('submit', 'listenvoice', ts('Listen to voice Broadcast'));
     $name = ts('Next >>');
     if (CRM_Mailing_Info::workflowEnabled()) {
       if (!CRM_Core_Permission::check('schedule mailings') &&
