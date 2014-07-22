@@ -34,9 +34,10 @@
 <fieldset>
   <legend>Test Voice Broadcast</legend>
   <table class="form-layout">
-    <tr class="crm-mailing-test-form-block-test_email"><td class="label">{$form.test_email.label}</td><td>{$form.test_email.html} {ts}(filled with your contact's token values){/ts}</td></tr>
+    <tr class="crm-mailing-test-form-block-test_email"><td class="label">{$form.test_voice.label}</td><td>{$form.test_voice.html} </td></tr>
     <tr class="crm-mailing-test-form-block-test_group"><td class="label">{$form.test_group.label}</td><td>{$form.test_group.html}</td></tr>
-    <tr><td></td><td>{$form.sendtest.html}</td>  
+    <tr><td></td><td>{$form.sendtest.html}</td></tr>
+    <tr><td></td><td>{$form.listenvoice.html}</td></tr>
   </table>
 </fieldset>
 
