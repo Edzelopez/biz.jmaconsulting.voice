@@ -1,43 +1,12 @@
 <?php
-/*
- +--------------------------------------------------------------------+
- | CiviCRM version 4.4                                                |
- +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2013                                |
- +--------------------------------------------------------------------+
- | This file is a part of CiviCRM.                                    |
- |                                                                    |
- | CiviCRM is free software; you can copy, modify, and distribute it  |
- | under the terms of the GNU Affero General Public License           |
- | Version 3, 19 November 2007 and the CiviCRM Licensing Exception.   |
- |                                                                    |
- | CiviCRM is distributed in the hope that it will be useful, but     |
- | WITHOUT ANY WARRANTY; without even the implied warranty of         |
- | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.               |
- | See the GNU Affero General Public License for more details.        |
- |                                                                    |
- | You should have received a copy of the GNU Affero General Public   |
- | License and the CiviCRM Licensing Exception along                  |
- | with this program; if not, contact CiviCRM LLC                     |
- | at info[AT]civicrm[DOT]org. If you have questions about the        |
- | GNU Affero General Public License or the licensing of CiviCRM,     |
- | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
- +--------------------------------------------------------------------+
-*/
 
-/**
- *
- * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2013
- * $Id$
- *
- */
 
 /**
  * Choose include / exclude groups and mailings
  *
  */
-class CRM_VoiceBroadcast_Form_Group extends CRM_Contact_Form_Task {
+class CRM_VoiceBroadcast_Form_Group extends CRM_Contact_Form_Task
+{
 
   /**
    * the mailing ID of the mailing if we are resuming a mailing
@@ -52,38 +21,9 @@ class CRM_VoiceBroadcast_Form_Group extends CRM_Contact_Form_Task {
    * @return void
    * @access public
    */
-  public function preProcess() {
-
-
+  public function preProcess()
+  {
     $this->_mailingID = CRM_Utils_Request::retrieve('mid', 'Integer', $this, FALSE, NULL);
-
-    // when user come from search context.
-//    $this->_searchBasedMailing = CRM_Contact_Form_Search::isSearchContext($this->get('context'));
-//    if ($this->_searchBasedMailing) {
-//      $searchParams = $this->controller->exportValues();
-//      // number of records that were selected - All or Few.
-//      $this->_resultSelectOption = $searchParams['radio_ts'];
-//      if (CRM_Utils_Array::value('task', $searchParams) == 20) {
-//        parent::preProcess();
-//      }
-//    }
-
-//    $session = CRM_Core_Session::singleton();
-//    if ($this->_searchBasedMailing) {
-//      $config = CRM_Core_Config::singleton();
-//      $path = CRM_Utils_Array::value($config->userFrameworkURLVar, $_GET);
-//      $qfKey = CRM_Utils_Array::value('qfKey', $_GET);
-//      if ($qfKey) {
-//        $session->pushUserContext(CRM_Utils_System::url($path, "qfKey=$qfKey"));
-//      }
-//      else {
-//        $session->pushUserContext(CRM_Utils_System::url('civicrm/mailing', 'reset=1'));
-//      }
-//    }
-//    elseif (strpos($session->readUserContext(), 'civicrm/mailing') === FALSE) {
-//      // use previous context unless mailing is not schedule, CRM-4290
-//      $session->pushUserContext(CRM_Utils_System::url('civicrm/mailing', 'reset=1'));
-//    }
   }
 
   /**
@@ -94,13 +34,12 @@ class CRM_VoiceBroadcast_Form_Group extends CRM_Contact_Form_Task {
    *
    * @return None
    */
-  function setDefaultValues() {
+  function setDefaultValues()
+  {
     $continue = CRM_Utils_Request::retrieve('continue', 'String', $this, FALSE, NULL);
 
     $defaults = array();
     if ($this->_mailingID) {
-
-
 
       $em = $entityManager  = require __DIR__. '/../../../bootstrap.php';
       $voiceBroadcastEntity = $em->find('CRM\Voice\Entities\CivicrmVoiceBroadcast', $this->_mailingID);
@@ -117,31 +56,20 @@ class CRM_VoiceBroadcast_Form_Group extends CRM_Contact_Form_Task {
       $defaults['campaign_id'] = $voiceBroadcastEntity->getCampaignId();
       $defaults['dedupe_email'] = null;
 
-      $dao = new CRM_Mailing_DAO_MailingGroup();
+      $voiceBroadcastGroupEntities = $em->find('CRM\Voice\Entities\CivicrmVoiceBraodcastGroup', $this->_mailingID);
 
-      $mailingGroups = array(
-        'civicrm_group' => array( ),
-        'civicrm_mailing' => array( )
+      $mailingGroups = array('civicrm_group'     => array( ),
+                             'civicrm_mailing'   => array( )
       );
-      $dao->mailing_id = $this->_mailingID;
-      $dao->find();
-      while ($dao->fetch()) {
-        // account for multi-lingual
-        // CRM-11431
-        $entityTable = 'civicrm_group';
-        if (substr($dao->entity_table, 0, 15) == 'civicrm_mailing') {
-          $entityTable = 'civicrm_mailing';
-        }
-        $mailingGroups[$entityTable][$dao->group_type][] = $dao->entity_id;
+
+      $entityTable = 'civicrm_group';
+      foreach($voiceBroadcastGroupEntities as $voiceBroadcastGroupEntity)
+      {
+        $mailingGroups[$entityTable][$voiceBroadcastGroupEntity->getGroupType()][] = $voiceBroadcastGroupEntity->getEntityId();
       }
 
       $defaults['includeGroups'] = $mailingGroups['civicrm_group']['Include'];
       $defaults['excludeGroups'] = CRM_Utils_Array::value('Exclude', $mailingGroups['civicrm_group']);
-
-      if (!empty($mailingGroups['civicrm_mailing'])) {
-        $defaults['includeMailings'] = CRM_Utils_Array::value('Include', $mailingGroups['civicrm_mailing']);
-        $defaults['excludeMailings'] = CRM_Utils_Array::value('Exclude', $mailingGroups['civicrm_mailing']);
-      }
     }
 
     //when the context is search hide the mailing recipients.
@@ -168,7 +96,8 @@ class CRM_VoiceBroadcast_Form_Group extends CRM_Contact_Form_Task {
    * @return None
    * @access public
    */
-  public function buildQuickForm() {
+  public function buildQuickForm()
+  {
 
     //get the context
 //    $context = $this->get('context');
@@ -320,78 +249,14 @@ class CRM_VoiceBroadcast_Form_Group extends CRM_Contact_Form_Task {
     }
   }
 
-  public function postProcess() {
+  public function postProcess()
+  {
     $entityManager = require __DIR__. '/../../../bootstrap.php';
     $values        = $this->controller->exportValues($this->_name);
 
     //build hidden smart group. when user want to send  mailing
     //through search contact-> more action -> send Mailing. CRM-3711
     $groups         = array();
-
-
-//    if ($this->_searchBasedMailing && $this->_contactIds) {
-//      $session = CRM_Core_Session::singleton();
-
-//      if ($this->_resultSelectOption == 'ts_sel') {
-//        // create a static grp if only a subset of result set was selected:
-//
-//        $randID   = md5(time());
-//        $grpTitle = "Hidden Group {$randID}";
-//        $grpID    = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_Group', $grpTitle, 'id', 'title');
-//
-//        if (!$grpID) {
-//          $groupParams = array(
-//            'title' => $grpTitle,
-//            'is_active' => 1,
-//            'is_hidden' => 1,
-//            'group_type' => array('2' => 1),
-//          );
-//
-//          $group = CRM_Contact_BAO_Group::create($groupParams);
-//          $grpID = $group->id;
-//
-//          CRM_Contact_BAO_GroupContact::addContactsToGroup($this->_contactIds, $group->id);
-//
-//          $newGroupTitle = "Hidden Group {$grpID}";
-//          $groupParams = array(
-//            'id'    => $grpID,
-//            'name'  => CRM_Utils_String::titleToVar($newGroupTitle),
-//            'title' => $newGroupTitle,
-//            'group_type' => array('2' => 1),
-//          );
-//          $group = CRM_Contact_BAO_Group::create($groupParams);
-//        }
-//
-//        // note at this point its a static group
-//        $smartGroupId = $grpID;
-//      }
-//      else {
-//        //get the hidden smart group id.
-//        $ssId = $this->get('ssID');
-//        $hiddenSmartParams = array('group_type' => array('2' => 1),
-//          'form_values' => $this->get('formValues'),
-//          'saved_search_id' => $ssId,
-//          'search_custom_id' => $this->get('customSearchID'),
-//          'search_context' => $this->get('context'),
-//        );
-//
-//        list($smartGroupId, $savedSearchId) = CRM_Contact_BAO_Group::createHiddenSmartGroup($hiddenSmartParams);
-//
-//        //set the saved search id.
-//        if (!$ssId) {
-//          if ($savedSearchId) {
-//            $this->set('ssID', $savedSearchId);
-//          }
-//          else {
-//            CRM_Core_Error::fatal();
-//          }
-//        }
-//      }
-//
-//      //get the base group for this mailing, CRM-3711
-//      $groups['base'] = array($values['baseGroup']);
-//      $values['includeGroups'][] = $smartGroupId;
-//    }
 
     foreach (array('name', 'group_id', 'search_id', 'search_args', 'campaign_id', 'is_public', 'phone_location', 'phone_type') as $n)
     {
@@ -400,8 +265,6 @@ class CRM_VoiceBroadcast_Form_Group extends CRM_Contact_Form_Task {
       }
     }
 
-
-    $qf_Group_submit = $this->controller->exportValue($this->_name, '_qf_Group_submit');
     $this->set('name', $params['name']);
 
     $inGroups    = $values['includeGroups'];
@@ -450,21 +313,19 @@ class CRM_VoiceBroadcast_Form_Group extends CRM_Contact_Form_Task {
       // don't create a new mailing if already exists
       $ids['mailing_id'] = $this->get('mailing_id');
 
-      $groupTableName = CRM_Contact_BAO_Group::getTableName();
-      $mailingTableName = CRM_Mailing_BAO_Mailing::getTableName();
+      $voiceBroadcastGroupEntities = $entityManager->find('CRM\Voice\Entities\CivicrmVoiceBraodcastGroup', $ids['mailing_id']);
 
-      // delete previous includes/excludes, if mailing already existed
-      foreach (array('groups', 'mailings') as $entity) {
-        $mg               = new CRM_Mailing_DAO_MailingGroup();
-        $mg->mailing_id   = $ids['mailing_id'];
-        $mg->entity_table = ($entity == 'groups') ? $groupTableName : $mailingTableName;
-        $mg->find();
-        while ($mg->fetch()) {
-          $mg->delete();
-        }
+      if(!empty($voiceBroadcastGroupEntities)) {
+
+          foreach($voiceBroadcastGroupEntities as $voiceBroadcastGroupEntity)
+          {
+            $entityManager->remove($voiceBroadcastGroupEntity);
+          }
+
+          $entityManager->flush();
+
       }
-    }
-    else {
+    } else {
       // new mailing, so lets set the created_id
       $session = CRM_Core_Session::singleton();
       $params['created_id'] = $session->get('userID');
@@ -499,50 +360,6 @@ class CRM_VoiceBroadcast_Form_Group extends CRM_Contact_Form_Task {
     $this->assign('count', $count);
     $this->set('groups', $groups);
     $this->set('mailings', $mailings);
-
-//    if ($qf_Group_submit) {
-//      //when user perform mailing from search context
-//      //redirect it to search result CRM-3711.
-//      $ssID = $this->get('ssID');
-//      $context = $this->get('context');
-//      if ($ssID && $this->_searchBasedMailing) {
-//        if ($this->_action == CRM_Core_Action::BASIC) {
-//          $fragment = 'search';
-//        }
-//        elseif ($this->_action == CRM_Core_Action::PROFILE) {
-//          $fragment = 'search/builder';
-//        }
-//        elseif ($this->_action == CRM_Core_Action::ADVANCED) {
-//          $fragment = 'search/advanced';
-//        }
-//        else {
-//          $fragment = 'search/custom';
-//        }
-//
-//        $context = $this->get('context');
-//        if (!CRM_Contact_Form_Search::isSearchContext($context)) {
-//          $context = 'search';
-//        }
-//        $urlParams = "force=1&reset=1&ssID={$ssID}&context={$context}";
-//
-//        $qfKey = CRM_Utils_Request::retrieve('qfKey', 'String', $this);
-//        if (CRM_Utils_Rule::qfKey($qfKey)) {
-//          $urlParams .= "&qfKey=$qfKey";
-//        }
-//
-//        $draftURL = CRM_Utils_System::url('civicrm/mailing/browse/unscheduled', 'scheduled=false&reset=1');
-//        $status = ts("You can continue later by clicking the 'Continue' action to resume working on it.<br />From <a href='%1'>Draft and Unscheduled Mailings</a>.", array(1 => $draftURL));
-//
-//        // Redirect user to search.
-//        $url = CRM_Utils_System::url('civicrm/contact/' . $fragment, $urlParams);
-//      }
-//      else {
-//        $status = ts("Click the 'Continue' action to resume working on it.");
-//        $url = CRM_Utils_System::url('civicrm/mailing/browse/unscheduled', 'scheduled=false&reset=1');
-//      }
-//      CRM_Core_Session::setStatus($status, ts('Mailing Saved'), 'success');
-//      return $this->controller->setDestination($url);
-//    }
   }
 
   /**
@@ -609,8 +426,6 @@ class CRM_VoiceBroadcast_Form_Group extends CRM_Contact_Form_Task {
 
 
 
-
-
   public function create(&$entityManager, &$params, $ids = array())
   {
 
@@ -627,12 +442,11 @@ class CRM_VoiceBroadcast_Form_Group extends CRM_Contact_Form_Task {
                                 )
                             );
 
-
-
       if (!isset($params['created_id'])) {
         $session =& CRM_Core_Session::singleton();
         $params['created_id'] = $session->get('userID');
       }
+
       $defaults = array(
         'is_track_call_cost'        => false,
         'is_track_call_duration'    =>  false,
@@ -656,43 +470,39 @@ class CRM_VoiceBroadcast_Form_Group extends CRM_Contact_Form_Task {
       }
 
       $params = array_merge($defaults, $params);
+
+        //Persist Voice
+        $voiceEntity = new \CRM\Voice\Entities\CivicrmVoiceBroadcast();
+        $voiceEntity->setName($params['name']);
+        $voiceEntity->setCreatedAt(new DateTime('now'));
+        $voiceEntity->setIsTrackCallCost($params['is_track_call_cost']);
+        $voiceEntity->setIsTrackCallDisposition($params['is_track_call_disposition']);
+        $voiceEntity->setIsTrackCallDuration($params['is_track_call_duration']);
+        $voiceEntity->setDomainId($params['domain_id']);
+        $voiceEntity->setContactId($params['contact_id']);
+        $voiceEntity->setCampaignId(1);
+        $voiceEntity->setPhoneId(1);
+        $voiceEntity->setIsPrimary(empty($params['is_public'])?false:true);
+        $voiceEntity->setPhoneLocation($params['phone_location']);
+        $voiceEntity->setPhoneType($params['phone_type']);
+        $voiceEntity->setVoiceMessageFile($params['voice_message_file']);
+
+        $entityManager->persist($voiceEntity);
+        $entityManager->flush();
+
+    } else {
+        $voiceEntity = $entityManager->getRepository('CRM\Voice\Entities\CivicrmVoiceBroadcast')->findOneBy(array('id' => $ids['mailing_id'] ));
+        $voiceEntity->setName($params['name']);
+        $voiceEntity->setIsPrimary(empty($params['is_public'])?false:true);
+        $voiceEntity->setPhoneLocation($params['phone_location']);
+        $voiceEntity->setPhoneType($params['phone_type']);
+        $entityManager->persist($voiceEntity);
+        $entityManager->flush();
     }
-
-
-     //Persist Voice
-
-
-
-    $voiceEntity = new \CRM\Voice\Entities\CivicrmVoiceBroadcast();
-    $voiceEntity->setName($params['name']);
-    $voiceEntity->setCreatedAt(new DateTime('now'));
-    $voiceEntity->setIsTrackCallCost($params['is_track_call_cost']);
-    $voiceEntity->setIsTrackCallDisposition($params['is_track_call_disposition']);
-    $voiceEntity->setIsTrackCallDuration($params['is_track_call_duration']);
-    $voiceEntity->setDomainId($params['domain_id']);
-    $voiceEntity->setContactId($params['contact_id']);
-    $voiceEntity->setCampaignId(1);
-    $voiceEntity->setPhoneId(1);
-    $voiceEntity->setIsPrimary(empty($params['is_public'])?false:true);
-    $voiceEntity->setPhoneLocation($params['phone_location']);
-    $voiceEntity->setPhoneType($params['phone_type']);
-    $voiceEntity->setVoiceMessageFile($params['voice_message_file']);
-
-    $entityManager->persist($voiceEntity);
-    $entityManager->flush();
-
-    //$mailing = self::add($params, $ids);
-
-//    if (is_a($mailing, 'CRM_Core_Error')) {
-//      $transaction->rollback();
-//      return $mailing;
-//    }
 
 
 
     $groupTableName = 'civicrm_group';
-    $mailingTableName = CRM_Mailing_BAO_Mailing::getTableName();
-
 
     foreach (array('groups', 'mailings') as $entity)
     {

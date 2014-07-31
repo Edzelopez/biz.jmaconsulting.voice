@@ -266,10 +266,10 @@ class CRM_VoiceBroadcast_Form_Upload extends CRM_Core_Form
 
 
     CRM_Core_BAO_File::formatAttachment($formValues,
-      $params,
-      'civicrm_mailing',
-      $this->_mailingID
-    );
+                                          $params,
+                                          'civicrm_mailing',
+                                          $this->_mailingID
+                                        );
     $ids['mailing_id'] = $this->_mailingID;
 
 

@@ -48,7 +48,7 @@
             </td>
         </tr>
     </table>
-  </fieldset>
+  </fieldset
 
 
 
