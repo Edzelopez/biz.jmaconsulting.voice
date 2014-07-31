@@ -40,18 +40,14 @@ class CRM_VoiceBroadcast_Form_Upload extends CRM_Core_Form
 {
   public $_mailingID;
 
-  function preProcess() {
+
+  public function preProcess()
+  {
     $this->_mailingID = $this->get('mailing_id');
 
     //when user come from search context.
     $ssID = $this->get('ssID');
     $this->assign('ssid',$ssID);
-//    $this->_searchBasedMailing = CRM_Contact_Form_Search::isSearchContext($this->get('context'));
-//    if(CRM_Contact_Form_Search::isSearchContext($this->get('context')) && !$ssID){
-//      $params = array();
-//      $result = CRM_Core_BAO_PrevNextCache::getSelectedContacts();
-//      $this->assign("value", $result);
-//    }
   }
   /**
    * This function sets the default values for the form.
@@ -67,10 +63,10 @@ class CRM_VoiceBroadcast_Form_Upload extends CRM_Core_Form
 
     //need to differentiate new/reuse mailing, CRM-2873
     $reuseMailing = FALSE;
+
     if ($mailingID) {
       $reuseMailing = TRUE;
-    }
-    else {
+    } else {
       $mailingID = $this->_mailingID;
     }
 
@@ -89,112 +85,6 @@ class CRM_VoiceBroadcast_Form_Upload extends CRM_Core_Form
       $dao->find(TRUE);
       $dao->storeValues($dao, $defaults);
     }
-
-      //we don't want to retrieve template details once it is
-      //set in session
-//      $templateId = $this->get('template');
-//      $this->assign('templateSelected', $templateId ? $templateId : 0);
-//      if (isset($defaults['msg_template_id']) && !$templateId) {
-//        $defaults['template'] = $defaults['msg_template_id'];
-//        $messageTemplate = new CRM_Core_DAO_MessageTemplate();
-//        $messageTemplate->id = $defaults['msg_template_id'];
-//        $messageTemplate->selectAdd();
-//        $messageTemplate->selectAdd('msg_text, msg_html');
-//        $messageTemplate->find(TRUE);
-//
-//        $defaults['text_message'] = $messageTemplate->msg_text;
-//        $htmlMessage = $messageTemplate->msg_html;
-//      }
-//
-//      if (isset($defaults['body_text'])) {
-//        $defaults['text_message'] = $defaults['body_text'];
-//        $this->set('textFile', $defaults['body_text']);
-//        $this->set('skipTextFile', TRUE);
-//      }
-//
-//      if (isset($defaults['body_html'])) {
-//        $htmlMessage = $defaults['body_html'];
-//        $this->set('htmlFile', $defaults['body_html']);
-//        $this->set('skipHtmlFile', TRUE);
-//      }
-//
-//      //set default from email address.
-//      if (CRM_Utils_Array::value('from_name', $defaults) && CRM_Utils_Array::value('from_email', $defaults)) {
-//        $defaults['from_email_address'] = array_search('"' . $defaults['from_name'] . '" <' . $defaults['from_email'] . '>',
-//          CRM_Core_OptionGroup::values('from_email_address')
-//        );
-//      }
-//      else {
-//        //get the default from email address.
-//        $defaultAddress = CRM_Core_OptionGroup::values('from_email_address', NULL, NULL, NULL, ' AND is_default = 1');
-//        foreach ($defaultAddress as $id => $value) {
-//          $defaults['from_email_address'] = $id;
-//        }
-//      }
-//
-//      if (CRM_Utils_Array::value('replyto_email', $defaults)) {
-//        $replyToEmail = CRM_Core_OptionGroup::values('from_email_address');
-//        foreach ($replyToEmail as $value) {
-//          if (strstr($value, $defaults['replyto_email'])) {
-//            $replyToEmailAddress = $value;
-//            break;
-//          }
-//        }
-//        $replyToEmailAddress = explode('<', $replyToEmailAddress);
-//        if (count($replyToEmailAddress) > 1) {
-//          $replyToEmailAddress = $replyToEmailAddress[0] . '<' . $replyToEmailAddress[1];
-//        }
-//        $defaults['reply_to_address'] = array_search($replyToEmailAddress, $replyToEmail);
-//      }
-//    }
-
-//    //fix for CRM-2873
-//    if (!$reuseMailing) {
-//      $textFilePath = $this->get('textFilePath');
-//      if ($textFilePath &&
-//        file_exists($textFilePath)
-//      ) {
-//        $defaults['text_message'] = file_get_contents($textFilePath);
-//        if (strlen($defaults['text_message']) > 0) {
-//          $this->set('skipTextFile', TRUE);
-//        }
-//      }
-//
-//      $htmlFilePath = $this->get('htmlFilePath');
-//      if ($htmlFilePath &&
-//        file_exists($htmlFilePath)
-//      ) {
-//        $defaults['html_message'] = file_get_contents($htmlFilePath);
-//        if (strlen($defaults['html_message']) > 0) {
-//          $htmlMessage = $defaults['html_message'];
-//          $this->set('skipHtmlFile', TRUE);
-//        }
-//      }
-//    }
-//
-//    if ($this->get('html_message')) {
-//      $htmlMessage = $this->get('html_message');
-//    }
-//
-//    $htmlMessage = str_replace(array("\n", "\r"), ' ', $htmlMessage);
-//    $htmlMessage = str_replace("'", "\'", $htmlMessage);
-//    $this->assign('message_html', $htmlMessage);
-//
-//    $defaults['upload_type'] = 1;
-//    if (isset($defaults['body_html'])) {
-//      $defaults['html_message'] = $defaults['body_html'];
-//    }
-//
-//    //CRM-4678 setdefault to default component when composing new mailing.
-//    if (!$reuseMailing) {
-//      $componentFields = array(
-//        'header_id' => 'Header',
-//        'footer_id' => 'Footer',
-//      );
-//      foreach ($componentFields as $componentVar => $componentType) {
-//        $defaults[$componentVar] = CRM_Mailing_PseudoConstant::defaultComponent($componentType, '');
-//      }
-//    }
 
     return $defaults;
   }
@@ -224,7 +114,7 @@ class CRM_VoiceBroadcast_Form_Upload extends CRM_Core_Form
                 TRUE
     );
 
-    $this->addElement('file', 'textFile', ts('Upload Voice Message'), 'size=30 maxlength=60');
+    $this->addElement('file', 'textFile', ts('Upload Voice Message'));
     $this->addUploadElement('textFile');
     $this->addFormRule(array('CRM_VoiceBroadcast_Form_Upload', 'formRule'), $this);
 
@@ -251,7 +141,11 @@ class CRM_VoiceBroadcast_Form_Upload extends CRM_Core_Form
     $this->addButtons($buttons);
   }
 
-  public function postProcess() {
+  public function postProcess()
+  {
+
+    $entityManager = require __DIR__. '/../../../bootstrap.php';
+
     $params       = $ids = array();
     $uploadParams = array('caller');
     $fileType     = array('textFile');
@@ -264,19 +158,28 @@ class CRM_VoiceBroadcast_Form_Upload extends CRM_Core_Form
     $params['contact_id'] = $session->get('userID');
 
 
-
-    CRM_Core_BAO_File::formatAttachment($formValues,
-                                          $params,
-                                          'civicrm_mailing',
-                                          $this->_mailingID
-                                        );
     $ids['mailing_id'] = $this->_mailingID;
 
 
-    /* Build the mailing object */
 
-    CRM_Mailing_BAO_Mailing::create($params, $ids);
+    // Remove backslashes and forward slashes from new filename
+    $voiceFileName = strtr($_FILES['textFile']['name'],'/\\','');
 
+
+
+    // Remove ".." from new filename
+    $voiceFileName = str_replace('..', '', $voiceFileName);
+
+    //Upload DIR
+    $uploadDir =   'uploads/';
+
+    //File Uploading
+    move_uploaded_file($_FILES['textFile']['tmp_name'], __DIR__. '/../../../' . $uploadDir . $voiceFileName);
+
+    $voiceEntity = $entityManager->getRepository('CRM\Voice\Entities\CivicrmVoiceBroadcast')->findOneBy(array('id' => $ids['mailing_id']));
+    $voiceEntity->setVoiceMessageFile($uploadDir . $voiceFileName);
+    $entityManager->persist($voiceEntity);
+    $entityManager->flush();
   }
 
   /**

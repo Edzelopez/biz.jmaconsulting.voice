@@ -346,7 +346,7 @@ class CRM_VoiceBroadcast_Form_Group extends CRM_Contact_Form_Task
     $this->_mailingID = $voiceBroadCastEntity->getId();
 
     // also compute the recipients and store them in the mailing recipients table
-    CRM_Mailing_BAO_Mailing::getRecipients(
+    $this->getRecipients(
       $this->_mailingID,
       $this->_mailingID,
       NULL,
@@ -355,7 +355,12 @@ class CRM_VoiceBroadcast_Form_Group extends CRM_Contact_Form_Task
       $dedupeEmail
     );
 
-    $count = CRM_Mailing_BAO_Recipients::mailingSize($this->_mailingID);
+    $sql = "SELECT count(*) as count
+            FROM   civicrm_voice_broadcast_recipients
+            WHERE  mailing_id = %1";
+
+    $params = array(1 => array($this->_mailingID, 'Integer'));
+    $count  = CRM_Core_DAO::singleValueQuery($sql, $params);
     $this->set('count', $count);
     $this->assign('count', $count);
     $this->set('groups', $groups);
@@ -421,6 +426,180 @@ class CRM_VoiceBroadcast_Form_Group extends CRM_Contact_Form_Task
     }
 
     return empty($errors) ? TRUE : $errors;
+  }
+
+  // move these function to bao file
+  public function getRecipients($job_id,
+                                 $mailing_id = NULL,
+                                 $offset = NULL,
+                                 $limit = NULL,
+                                 $storeRecipients = FALSE,
+                                 $dedupeEmail = FALSE,
+                                 $mode = NULL) {
+    $mailingGroup = new CRM_Mailing_DAO_MailingGroup();
+
+    $mailing = 'civicrm_voice_broadcast';
+    $job     = 'civicrm_voice_broadcast_job';
+    $mg      = 'civicrm_voice_braodcast_group';
+    $eq      = CRM_Mailing_Event_DAO_Queue::getTableName();
+    $ed      = CRM_Mailing_Event_DAO_Delivered::getTableName();
+    $eb      = CRM_Mailing_Event_DAO_Bounce::getTableName();
+
+    $email = CRM_Core_DAO_Email::getTableName();
+    $phone = CRM_Core_DAO_Phone::getTableName();
+
+
+    $contact = CRM_Contact_DAO_Contact::getTableName();
+
+    $group     = CRM_Contact_DAO_Group::getTableName();
+    $g2contact = CRM_Contact_DAO_GroupContact::getTableName();
+
+    /* Create a temp table for contact exclusion */
+    $mailingGroup->query("CREATE TEMPORARY TABLE X_$job_id
+                          (contact_id int primary key)
+                          ENGINE=HEAP");
+
+    /* Add all the members of groups excluded from this mailing to the temp
+         * table */
+
+    $excludeSubGroup = "INSERT INTO        X_$job_id (contact_id)
+                        SELECT  DISTINCT    $g2contact.contact_id
+                        FROM                $g2contact
+                        INNER JOIN          $mg
+                            ON          $g2contact.group_id = $mg.entity_id AND $mg.entity_table = '$group'
+                        WHERE
+                                        $mg.voice_id = {$mailing_id}
+                        AND             $g2contact.status = 'Added'
+                        AND             $mg.group_type = 'Exclude'";
+    $mailingGroup->query($excludeSubGroup);
+
+    /* Add all unsubscribe members of base group from this mailing to the temp
+         * table */
+
+    $unSubscribeBaseGroup = "INSERT INTO        X_$job_id (contact_id)
+                            SELECT  DISTINCT    $g2contact.contact_id
+                            FROM                $g2contact
+                            INNER JOIN          $mg
+                                    ON          $g2contact.group_id = $mg.entity_id AND $mg.entity_table = '$group'
+                            WHERE
+                                                $mg.voice_id = {$mailing_id}
+                                AND             $g2contact.status = 'Removed'
+                                AND             $mg.group_type = 'Base'";
+    $mailingGroup->query($unSubscribeBaseGroup);
+
+    /* Add all the (intended) recipients of an excluded prior mailing to
+         * the temp table */
+
+    $excludeSubMailing = "INSERT IGNORE INTO X_$job_id (contact_id)
+                    SELECT  DISTINCT    $eq.contact_id
+                    FROM                $eq
+                    INNER JOIN          $job
+                            ON          $eq.job_id = $job.id
+                    INNER JOIN          $mg
+                            ON          $job.voice_id = $mg.entity_id AND $mg.entity_table = '$mailing'
+                    WHERE
+                                        $mg.voice_id = {$mailing_id}
+                        AND             $mg.group_type = 'Exclude'";
+    $mailingGroup->query($excludeSubMailing);
+
+
+
+    $tempColumn = 'phone_id';
+
+
+    /* Get all the group contacts we want to include */
+
+    $mailingGroup->query("CREATE TEMPORARY TABLE I_$job_id
+                         ($tempColumn int, contact_id int primary key)
+                         ENGINE=HEAP");
+
+
+      $phoneTypes = CRM_Core_OptionGroup::values('phone_type', TRUE, FALSE, FALSE, NULL, 'name');
+      $query      = "REPLACE INTO       I_$job_id (phone_id, contact_id)
+
+                    SELECT DISTINCT     $phone.id as phone_id,
+                                        $contact.id as contact_id
+                    FROM                $phone
+                    INNER JOIN          $contact
+                            ON          $phone.contact_id = $contact.id
+                    INNER JOIN          $g2contact
+                            ON          $contact.id = $g2contact.contact_id
+                    INNER JOIN          $mg
+                            ON          $g2contact.group_id = $mg.entity_id
+                                AND     $mg.entity_table = '$group'
+                    LEFT JOIN           X_$job_id
+                            ON          $contact.id = X_$job_id.contact_id
+                    WHERE
+                                       ($mg.group_type = 'Include')
+                        AND             $g2contact.status = 'Added'
+                        AND             $contact.do_not_sms = 0
+                        AND             $contact.is_opt_out = 0
+                        AND             $contact.is_deceased = 0
+                        AND             $phone.phone_type_id = {$phoneTypes['Mobile']}
+                        AND             $phone.phone IS NOT NULL
+                        AND             $phone.phone != ''
+                        AND             $mg.voice_id = {$mailing_id}
+                        AND             X_$job_id.contact_id IS null";
+
+    $mailingGroup->query($query);
+
+
+
+
+      $query = "REPLACE INTO       I_$job_id (phone_id, contact_id)
+                    SELECT DISTINCT     $phone.id as phone_id,
+                                        $contact.id as contact_id
+                    FROM                $phone
+                    INNER JOIN          $contact
+                            ON          $phone.contact_id = $contact.id
+                    INNER JOIN          $g2contact
+                            ON          $contact.id = $g2contact.contact_id
+                    INNER JOIN          $mg
+                            ON          $g2contact.group_id = $mg.entity_id
+                    LEFT JOIN           X_$job_id
+                            ON          $contact.id = X_$job_id.contact_id
+                    WHERE
+                                        $mg.entity_table = '$group'
+                        AND             $mg.group_type = 'Include'
+                        AND             $g2contact.status = 'Added'
+                        AND             $contact.do_not_sms = 0
+                        AND             $contact.is_opt_out = 0
+                        AND             $contact.is_deceased = 0
+                        AND             $phone.phone_type_id = {$phoneTypes['Mobile']}
+                        AND             $mg.voice_id = {$mailing_id}
+                        AND             X_$job_id.contact_id IS null";
+
+    $mailingGroup->query($query);
+
+    $results = array();
+
+    $eq = new CRM_Mailing_Event_BAO_Queue();
+
+
+
+
+
+      $sql = "DELETE FROM civicrm_voice_broadcast_recipients WHERE  voice_id = %1";
+      $params = array(1 => array($mailing_id, 'Integer'));
+      CRM_Core_DAO::executeQuery($sql, $params);
+
+
+
+      $sql = "INSERT INTO civicrm_voice_broadcast_recipients ( mailing_id, contact_id, {$tempColumn} )
+                SELECT %1, i.contact_id, i.{$tempColumn}
+                FROM       civicrm_contact contact_a
+                INNER JOIN I_$job_id i ON contact_a.id = i.contact_id
+                ORDER BY   i.contact_id, i.{$tempColumn}";
+
+      CRM_Core_DAO::executeQuery($sql, $params);
+
+    /* Delete the temp table */
+
+    $mailingGroup->reset();
+    $mailingGroup->query("DROP TEMPORARY TABLE X_$job_id");
+    $mailingGroup->query("DROP TEMPORARY TABLE I_$job_id");
+
+    return $eq;
   }
 
 
