@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `civicrm_voice_braodcast_group` (
   `voice_id` int(11) NOT NULL,
   `group_type` enum('Include','Exclude','Base') NOT NULL,
   `entity_id` int(11) NOT NULL,
-  `entity_table` int(11) NOT NULL,
+  `entity_table` varchar(20) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `voice_id` (`voice_id`,`entity_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

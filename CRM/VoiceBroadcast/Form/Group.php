@@ -357,7 +357,7 @@ class CRM_VoiceBroadcast_Form_Group extends CRM_Contact_Form_Task
 
     $sql = "SELECT count(*) as count
             FROM   civicrm_voice_broadcast_recipients
-            WHERE  mailing_id = %1";
+            WHERE  voice_id = %1";
 
     $params = array(1 => array($this->_mailingID, 'Integer'));
     $count  = CRM_Core_DAO::singleValueQuery($sql, $params);
@@ -585,7 +585,7 @@ class CRM_VoiceBroadcast_Form_Group extends CRM_Contact_Form_Task
 
 
 
-      $sql = "INSERT INTO civicrm_voice_broadcast_recipients ( mailing_id, contact_id, {$tempColumn} )
+      $sql = "INSERT INTO civicrm_voice_broadcast_recipients ( voice_id, contact_id, {$tempColumn} )
                 SELECT %1, i.contact_id, i.{$tempColumn}
                 FROM       civicrm_contact contact_a
                 INNER JOIN I_$job_id i ON contact_a.id = i.contact_id

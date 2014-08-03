@@ -170,14 +170,17 @@ class CRM_VoiceBroadcast_Form_Upload extends CRM_Core_Form
     // Remove ".." from new filename
     $voiceFileName = str_replace('..', '', $voiceFileName);
 
-    //Upload DIR
-    $uploadDir =   'uploads/';
+
+    $config = CRM_Core_Config::singleton();
+
 
     //File Uploading
-    move_uploaded_file($_FILES['textFile']['tmp_name'], __DIR__. '/../../../' . $uploadDir . $voiceFileName);
+    move_uploaded_file($_FILES['textFile']['tmp_name'], $config->uploadDir . $voiceFileName);
+
+
 
     $voiceEntity = $entityManager->getRepository('CRM\Voice\Entities\CivicrmVoiceBroadcast')->findOneBy(array('id' => $ids['mailing_id']));
-    $voiceEntity->setVoiceMessageFile($uploadDir . $voiceFileName);
+    $voiceEntity->setVoiceMessageFile($config->uploadDir .  $voiceFileName);
     $entityManager->persist($voiceEntity);
     $entityManager->flush();
   }
