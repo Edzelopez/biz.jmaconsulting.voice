@@ -677,6 +677,11 @@ class CRM_VoiceBroadcast_Form_Group extends CRM_Contact_Form_Task
         $voiceEntity->setPhoneType($params['phone_type']);
         $entityManager->persist($voiceEntity);
         $entityManager->flush();
+
+        $sql       = "DELETE FROM civicrm_voice_braodcast_group WHERE  voice_id = %1";
+        $sqlParams = array(1 => array($ids['mailing_id'], 'Integer'));
+
+        CRM_Core_DAO::executeQuery($sql, $sqlParams);
     }
 
 

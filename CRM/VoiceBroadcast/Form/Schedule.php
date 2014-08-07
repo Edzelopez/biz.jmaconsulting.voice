@@ -12,7 +12,8 @@ class CRM_VoiceBroadcast_Form_Schedule extends CRM_Core_Form
    * @return void
    * @access public
    */
-  public function preProcess() {
+  public function preProcess()
+  {
     if (CRM_Mailing_Info::workflowEnabled() &&
       !CRM_Core_Permission::check('schedule mailings')
     ) {
@@ -72,14 +73,14 @@ class CRM_VoiceBroadcast_Form_Schedule extends CRM_Core_Form
     $this->addFormRule(array('CRM_Mailing_Form_Schedule', 'formRule'), $this);
 
     if ($this->_scheduleFormOnly) {
-      $title = ts('Schedule Mailing') . ' - ' . CRM_Core_DAO::getFieldValue('CRM_Mailing_DAO_Mailing',
+      $title = ts('Schedule Voice broadcast') . ' - ' . CRM_Core_DAO::getFieldValue('CRM_Mailing_DAO_Mailing',
         $this->_mailingID,
         'name'
       );
       CRM_Utils_System::setTitle($title);
       $buttons = array(
         array('type' => 'next',
-          'name' => ts('Submit Mailing'),
+          'name' => ts('Submit Voice Broadcast'),
           'spacing' => '&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;',
           'isDefault' => TRUE,
         ),
@@ -112,7 +113,7 @@ class CRM_VoiceBroadcast_Form_Schedule extends CRM_Core_Form
           ),
           array(
             'type' => 'next',
-            'name' => ts('Submit Mailing'),
+            'name' => ts('Submit Voice Broadcast'),
             'spacing' => '&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;',
             'isDefault' => TRUE,
             'js' => array('onclick' => "return submitOnce(this,'" . $this->_name . "','" . ts('Processing') . "');"),

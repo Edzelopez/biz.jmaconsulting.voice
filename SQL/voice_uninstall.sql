@@ -12,3 +12,6 @@ DROP TABLE IF EXISTS `civicrm_voice_broadcast_job`;
 DROP TABLE IF EXISTS `civicrm_voice_broadcast_recipients`;
 DROP TABLE IF EXISTS `civicrm_voice_broadcast_response`;
 DROP TABLE IF EXISTS `civicrm_voice_broadcast_spool`;
+
+-- Delete the row from civicrm cron job
+DELETE FROM `civicrm`.`civicrm_job` WHERE `civicrm_job`.`api_action` = 'processvoicebroadcast' AND `civicrm_job`.`api_entity` = 'job';

@@ -114,4 +114,8 @@ CREATE TABLE IF NOT EXISTS `civicrm_voice_broadcast_spool` (
   KEY `voice_id` (`job_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
+-- Add a entry for civicrm broadcast in civicrm job table
+INSERT INTO `civicrm`.`civicrm_job` (`id`, `domain_id`, `run_frequency`, `last_run`, `name`, `description`, `api_entity`, `api_action`, `parameters`, `is_active`) VALUES (NULL, '1', 'Always', NULL, 'Call Job.ProcessVoicebroadcast', 'Process voice broadcast', 'job', 'processvoicebroadcast', NULL, '1');
+
 SET FOREIGN_KEY_CHECKS=1;
+

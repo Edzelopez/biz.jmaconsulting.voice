@@ -44,12 +44,14 @@ class CRM_VoiceBroadcast_Form_Test extends CRM_Core_Form {
    * @return void
    * @access public
    */
-  public function preProcess() {
+  public function preProcess()
+  {
     //when user come from search context.
     $ssID = $this->get('ssID');
     $this->assign('ssid',$ssID);
     $this->_searchBasedMailing = CRM_Contact_Form_Search::isSearchContext($this->get('context'));
-    if(CRM_Contact_Form_Search::isSearchContext($this->get('context')) && !$ssID){
+
+    if (CRM_Contact_Form_Search::isSearchContext($this->get('context')) && !$ssID){
       $params = array();
       $result = CRM_Core_BAO_PrevNextCache::getSelectedContacts();
       $this->assign("value", $result);
@@ -71,14 +73,15 @@ class CRM_VoiceBroadcast_Form_Test extends CRM_Core_Form {
   public function buildQuickForm() {
     $session = CRM_Core_Session::singleton();
     $this->add('text', 'test_voice', ts('Send to this Number'));
-    $defaults['test_email'] = $session->get('ufUniqID');
+    $defaults['test_voice'] = '14389852516'; //$session->get('ufUniqID');
     $qfKey = $this->get('qfKey');
 
     $this->add('select',
-      'test_group',
-      ts('Send to This Group'),
-      array('' => ts('- none -')) + CRM_Core_PseudoConstant::group('Mailing')
-    );
+               'test_group',
+               ts('Send to This Group'),
+               array('' => ts('- none -')) + CRM_Core_PseudoConstant::group('Mailing')
+              );
+
     $this->setDefaults($defaults);
 
     $this->add('submit', 'sendtest', ts('Send a Test Voice'));
@@ -122,11 +125,6 @@ class CRM_VoiceBroadcast_Form_Test extends CRM_Core_Form {
     //Token Replacement of Subject in preview mailing
     $options = array();
 
-
-
-
-
-
     $userID           = $session->get('userID');
     $params           = array('contact_id' => $userID);
   }
@@ -141,29 +139,15 @@ class CRM_VoiceBroadcast_Form_Test extends CRM_Core_Form {
    * @return boolean          true on successful SMTP handoff
    * @access public
    */
-  static function testMail($testParams, $files, $self) {
+  static function testMail($testParams, $files, $self)
+  {
     $error = NULL;
 
     $urlString = 'civicrm/mailing/send';
     $urlParams = "_qf_Test_display=true&qfKey={$testParams['qfKey']}";
 
     $ssID = $self->get('ssID');
-    if ($ssID && $self->_searchBasedMailing) {
-      if ($self->_action == CRM_Core_Action::BASIC) {
-        $fragment = 'search';
-      }
-      elseif ($self->_action == CRM_Core_Action::PROFILE) {
-        $fragment = 'search/builder';
-      }
-      elseif ($self->_action == CRM_Core_Action::ADVANCED) {
-        $fragment = 'search/advanced';
-      }
-      else {
-        $fragment = 'search/custom';
-      }
-      $urlString = 'civicrm/contact/' . $fragment;
-    }
-    $emails = NULL;
+
     if (CRM_Utils_Array::value('sendtest', $testParams)) {
       if (!($testParams['test_group'] || $testParams['test_email'])) {
         CRM_Core_Session::setStatus(ts('You did not provide an email address or select a group.'), ts('Test not sent.'), 'error');
