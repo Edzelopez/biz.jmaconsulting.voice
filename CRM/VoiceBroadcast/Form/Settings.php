@@ -36,6 +36,7 @@ class CRM_VoiceBroadcast_Form_Settings extends CRM_Core_Form {
     $entityManager  = require __DIR__. '/../../../bootstrap.php';
     $mailingID      = CRM_Utils_Request::retrieve('mid', 'Integer', $this, FALSE, NULL);
     $count          = $this->get('count');
+    $count = 1;
     $defaults       = array();
 
     $this->assign('count', $count);

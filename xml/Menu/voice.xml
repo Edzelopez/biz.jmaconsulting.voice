@@ -12,10 +12,9 @@
     <title>Voice</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
-
-   <item>
+  <item>
     <path>civicrm/voicebroadcast/send</path>
-    <title>New Mailing</title>
+    <title>New Voice Broadcast</title>
     <page_callback>CRM_VoiceBroadcast_Controller_Send</page_callback>
     <access_arguments>access Civivoicebroadcast;create broadcast;schedule broadcast</access_arguments>
     <page_type>1</page_type>

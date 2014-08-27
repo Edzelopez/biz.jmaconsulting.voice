@@ -21,10 +21,6 @@ class CRM_VoiceBroadcast_Form_Schedule extends CRM_Core_Form
       CRM_Utils_System::redirect($url);
     }
 
-    //when user come from search context.
-    $ssID = $this->get('ssID');
-    $this->assign('ssid',$ssID);
-    $this->_searchBasedMailing = CRM_Contact_Form_Search::isSearchContext($this->get('context'));
     if(CRM_Contact_Form_Search::isSearchContext($this->get('context')) && !$ssID){
       $params = array();
       $result = CRM_Core_BAO_PrevNextCache::getSelectedContacts();
@@ -47,7 +43,7 @@ class CRM_VoiceBroadcast_Form_Schedule extends CRM_Core_Form
   function setDefaultValues() {
     $defaults = array();
     if ($this->_scheduleFormOnly) {
-      $count = CRM_Mailing_BAO_Recipients::mailingSize($this->_mailingID);
+      $count = CRM_VoiceBroadcast_BAO_Recipients::mailingSize($this->_mailingID);
     }
     else {
       $count = $this->get('count');
@@ -91,39 +87,22 @@ class CRM_VoiceBroadcast_Form_Schedule extends CRM_Core_Form
       );
     }
     else {
-      //FIXME : currently we are hiding save an continue later when
-      //search base mailing, we should handle it when we fix CRM-3876
-      if ($this->_searchBasedMailing) {
-        $buttons = array(
-          array('type' => 'back',
-            'name' => ts('<< Previous'),
-          ),
-          array(
-            'type' => 'next',
-            'name' => ts('Submit Mailing'),
-            'spacing' => '&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;',
-            'isDefault' => TRUE,
-          ),
-        );
-      }
-      else {
-        $buttons = array(
-          array('type' => 'back',
-            'name' => ts('<< Previous'),
-          ),
-          array(
-            'type' => 'next',
-            'name' => ts('Submit Voice Broadcast'),
-            'spacing' => '&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;',
-            'isDefault' => TRUE,
-            'js' => array('onclick' => "return submitOnce(this,'" . $this->_name . "','" . ts('Processing') . "');"),
-          ),
-          array(
-            'type' => 'cancel',
-            'name' => ts('Continue Later'),
-          ),
-        );
-      }
+      $buttons = array(
+        array('type' => 'back',
+          'name' => ts('<< Previous'),
+        ),
+        array(
+          'type' => 'next',
+          'name' => ts('Submit Voice Broadcast'),
+          'spacing' => '&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;',
+          'isDefault' => TRUE,
+          'js' => array('onclick' => "return submitOnce(this,'" . $this->_name . "','" . ts('Processing') . "');"),
+        ),
+        array(
+          'type' => 'cancel',
+          'name' => ts('Continue Later'),
+        ),
+      );
     }
     $this->addButtons($buttons);
 
@@ -139,7 +118,7 @@ class CRM_VoiceBroadcast_Form_Schedule extends CRM_Core_Form
       );
       $preview['viewURL'] = CRM_Utils_System::url('civicrm/mailing/view', "reset=1&id={$this->_mailingID}");
 
-      $preview['attachment'] = CRM_Core_BAO_File::attachmentInfo('civicrm_mailing', $this->_mailingID);
+      $preview['attachment'] = CRM_Core_BAO_File::attachmentInfo('civicrm_voice_broadcast', $this->_mailingID);
 
       $this->assign_by_ref('preview', $preview);
     }
@@ -159,48 +138,48 @@ class CRM_VoiceBroadcast_Form_Schedule extends CRM_Core_Form
    * @static
    */
   public static function formRule($params, $files, $self) {
-//    if (!empty($params['_qf_Schedule_submit'])) {
-//      //when user perform mailing from search context
-//      //redirect it to search result CRM-3711.
-//      $ssID = $self->get('ssID');
-//      if ($ssID && $self->_searchBasedMailing) {
-//        if ($self->_action == CRM_Core_Action::BASIC) {
-//          $fragment = 'search';
-//        }
-//        elseif ($self->_action == CRM_Core_Action::PROFILE) {
-//          $fragment = 'search/builder';
-//        }
-//        elseif ($self->_action == CRM_Core_Action::ADVANCED) {
-//          $fragment = 'search/advanced';
-//        }
-//        else {
-//          $fragment = 'search/custom';
-//        }
-//
-//        $draftURL = CRM_Utils_System::url('civicrm/mailing/browse/unscheduled', 'scheduled=false&reset=1');
-//        $status = ts("Your mailing has been saved. You can continue later by clicking the 'Continue' action to resume working on it.<br />From <a href='%1'>Draft and Unscheduled Mailings</a>.", array(1 => $draftURL));
-//        CRM_Core_Session::setStatus($status, ts('Mailing Saved'), 'success');
-//
-//        //replace user context to search.
-//        $context = $self->get('context');
-//        if (!CRM_Contact_Form_Search::isSearchContext($context)) {
-//          $context = 'search';
-//        }
-//
-//        $urlParams = "force=1&reset=1&ssID={$ssID}&context={$context}";
-//        $qfKey = CRM_Utils_Request::retrieve('qfKey', 'String', $this);
-//        if (CRM_Utils_Rule::qfKey($qfKey)) {
-//          $urlParams .= "&qfKey=$qfKey";
-//        }
-//        $url = CRM_Utils_System::url('civicrm/contact/' . $fragment, "force=1&reset=1&ssID={$ssID}");
-//      }
-//      else {
-//        $status = ts("Click the 'Continue' action to resume working on it.");
-//        $url = CRM_Utils_System::url('civicrm/mailing/browse/unscheduled', 'scheduled=false&reset=1');
-//      }
-//      CRM_Core_Session::setStatus($status, ts('Mailing Saved'), 'success');
-//      CRM_Utils_System::redirect($url);
-//    }
+    //  
+    //      //when user perform mailing from search context
+    //      //redirect it to search result CRM-3711.
+    //      $ssID = $self->get('ssID');
+    //      if ($ssID && $self->_searchBasedMailing) {
+    //        if ($self->_action == CRM_Core_Action::BASIC) {
+    //          $fragment = 'search';
+    //        }
+    //        elseif ($self->_action == CRM_Core_Action::PROFILE) {
+    //          $fragment = 'search/builder';
+    //        }
+    //        elseif ($self->_action == CRM_Core_Action::ADVANCED) {
+    //          $fragment = 'search/advanced';
+    //        }
+    //        else {
+    //          $fragment = 'search/custom';
+    //        }
+    //
+    //        $draftURL = CRM_Utils_System::url('civicrm/mailing/browse/unscheduled', 'scheduled=false&reset=1');
+    //        $status = ts("Your mailing has been saved. You can continue later by clicking the 'Continue' action to resume working on it.<br />From <a href='%1'>Draft and Unscheduled Mailings</a>.", array(1 => $draftURL));
+    //        CRM_Core_Session::setStatus($status, ts('Mailing Saved'), 'success');
+    //
+    //        //replace user context to search.
+    //        $context = $self->get('context');
+    //        if (!CRM_Contact_Form_Search::isSearchContext($context)) {
+    //          $context = 'search';
+    //        }
+    //
+    //        $urlParams = "force=1&reset=1&ssID={$ssID}&context={$context}";
+    //        $qfKey = CRM_Utils_Request::retrieve('qfKey', 'String', $this);
+    //        if (CRM_Utils_Rule::qfKey($qfKey)) {
+    //          $urlParams .= "&qfKey=$qfKey";
+    //        }
+    //        $url = CRM_Utils_System::url('civicrm/contact/' . $fragment, "force=1&reset=1&ssID={$ssID}");
+    //      }
+    //      else {
+    //        $status = ts("Click the 'Continue' action to resume working on it.");
+    //        $url = CRM_Utils_System::url('civicrm/mailing/browse/unscheduled', 'scheduled=false&reset=1');
+    //      }
+    //      CRM_Core_Session::setStatus($status, ts('Mailing Saved'), 'success');
+    //      CRM_Utils_System::redirect($url);
+    //    } 
     if (isset($params['now']) || CRM_Utils_Array::value('_qf_Schedule_back', $params) == '<< Previous') {
       return TRUE;
     }
@@ -268,6 +247,8 @@ class CRM_VoiceBroadcast_Form_Schedule extends CRM_Core_Form
       $params['approval_status_id'] = 'null';
     }
 
+    CRM_Core_Error::debug( '$params', $params );
+    exit;
     /* Build the mailing object */
     CRM_Mailing_BAO_Mailing::create($params, $ids);
 

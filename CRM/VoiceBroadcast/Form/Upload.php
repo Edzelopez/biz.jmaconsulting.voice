@@ -70,7 +70,7 @@ class CRM_VoiceBroadcast_Form_Upload extends CRM_Core_Form
       $mailingID = $this->_mailingID;
     }
 
-    $count = $this->get('count');
+    $count = 1;//$this->get('count');
     $this->assign('count', $count);
 
     $this->set('skipTextFile', FALSE);

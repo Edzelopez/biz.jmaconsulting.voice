@@ -15,6 +15,6 @@ require_once __DIR__ . '/../../../bootstrap.php';
  * @throws API_Exception
  */
 function civicrm_api3_job_processvoicebroadcast($params = array()) {
-  \CRM\VoiceBroadcast\BAO\VoiceBroadcast::processQueue();
+  CRM_VoiceBroadcast_BAO_VoiceBroadcast::processQueue();
 }
 

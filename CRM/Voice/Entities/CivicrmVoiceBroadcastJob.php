@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * CivicrmVoiceBroadcastJob
  *
- * @ORM\Table(name="civicrm_voice_broadcast_job", indexes={@ORM\Index(name="FK_civicrm_mailing_job_mailing_id", columns={"voice_id"}), @ORM\Index(name="FK_civicrm_mailing_job_parent_id", columns={"parent_id"})})
+ * @ORM\Table(name="civicrm_voice_braodcast_job", indexes={@ORM\Index(name="FK_civicrm_mailing_job_mailing_id", columns={"voice_id"}), @ORM\Index(name="FK_civicrm_mailing_job_parent_id", columns={"parent_id"})})
  * @ORM\Entity
  */
 class CivicrmVoiceBroadcastJob

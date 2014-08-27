@@ -8,9 +8,8 @@
 
 
 
-namespace CRM\VoiceBroadcast\BAO;
 
-class VoiceBroadcastJob
+class CRM_VoiceBroadcast_BAO_VoiceBroadcastJob extends CRM_Core_DAO
 {
     CONST MAX_CONTACTS_TO_PROCESS = 1000;
 
@@ -18,7 +17,7 @@ class VoiceBroadcastJob
   // before we run jobs, we need to split the jobs
   public static function runJobs_pre($offset = 200, $mode = NULL, $em = null)
   {
-    $job          = new VoiceBroadcastJob();
+    $job          = new CRM_VoiceBroadcast_BAO_VoiceBroadcastJob();
     $config       = CRM_Core_Config::singleton();
     $currentTime  = date('YmdHis');
     //$mailingACL = CRM_Mailing_BAO_Mailing::mailingACL('m');

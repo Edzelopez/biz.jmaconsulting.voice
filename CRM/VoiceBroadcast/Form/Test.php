@@ -46,10 +46,6 @@ class CRM_VoiceBroadcast_Form_Test extends CRM_Core_Form {
    */
   public function preProcess()
   {
-    //when user come from search context.
-    $ssID = $this->get('ssID');
-    $this->assign('ssid',$ssID);
-    $this->_searchBasedMailing = CRM_Contact_Form_Search::isSearchContext($this->get('context'));
 
     if (CRM_Contact_Form_Search::isSearchContext($this->get('context')) && !$ssID){
       $params = array();
@@ -66,7 +62,7 @@ class CRM_VoiceBroadcast_Form_Test extends CRM_Core_Form {
    * @return None
    */
   function setDefaultValues() {
-    $count = $this->get('count');
+    $count = 1;//$this->get('count');
     $this->assign('count', $count);
   }
 
@@ -121,7 +117,7 @@ class CRM_VoiceBroadcast_Form_Test extends CRM_Core_Form {
     $textFile  = $this->get('textFile');
     $htmlFile  = $this->get('htmlFile');
 
-    $this->addFormRule(array('CRM_Mailing_Form_Test', 'testMail'), $this);
+    //$this->addFormRule(array('CRM_Mailing_Form_Test', 'testMail'), $this);
     //Token Replacement of Subject in preview mailing
     $options = array();
 
@@ -150,8 +146,8 @@ class CRM_VoiceBroadcast_Form_Test extends CRM_Core_Form {
 
     if (CRM_Utils_Array::value('sendtest', $testParams)) {
       if (!($testParams['test_group'] || $testParams['test_email'])) {
-        CRM_Core_Session::setStatus(ts('You did not provide an email address or select a group.'), ts('Test not sent.'), 'error');
-        $error = TRUE;
+        //CRM_Core_Session::setStatus(ts('You did not provide an email address or select a group.'), ts('Test not sent.'), 'error');
+        //$error = TRUE;
       }
 
       if ($testParams['test_email']) {
@@ -207,11 +203,12 @@ class CRM_VoiceBroadcast_Form_Test extends CRM_Core_Form {
     }
 
     if (CRM_Utils_Array::value('_qf_Test_next', $testParams) &&
-      $self->get('count') <= 0) {
-      return array(
-        '_qf_default' =>
-        ts("You can not schedule or send this mailing because there are currently no recipients selected. Click 'Previous' to return to the Select Recipients step, OR click 'Save & Continue Later'."),
-      );
+      $self->get('count') <= 0 && 0) {
+      exit;
+      // return array(
+      //  '_qf_default' =>
+          //   ts("You can not schedule or send this mailing because there are currently no recipients selected. Click 'Previous' to return to the Select Recipients step, OR click 'Save & Continue Later'."),
+          //  );
     }
 
     if (CRM_Utils_Array::value('_qf_Import_refresh', $_POST) ||
@@ -219,6 +216,8 @@ class CRM_VoiceBroadcast_Form_Test extends CRM_Core_Form {
       !CRM_Utils_Array::value('sendtest', $testParams)
     ) {
       $error = TRUE;
+      CRM_Core_Error::debug( '$error', $error );
+      exit;
       return $error;
     }
 

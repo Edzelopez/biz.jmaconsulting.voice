@@ -56,7 +56,7 @@ class CRM_VoiceBroadcast_Form_Group extends CRM_Contact_Form_Task
       $defaults['campaign_id'] = $voiceBroadcastEntity->getCampaignId();
       $defaults['dedupe_email'] = null;
 
-      $voiceBroadcastGroupEntities = $em->find('CRM\Voice\Entities\CivicrmVoiceBraodcastGroup', $this->_mailingID);
+      $voiceBroadcastGroupEntities = $em->find('CRM\Voice\Entities\CivicrmVoiceBroadcastGroup', $this->_mailingID);
 
       $mailingGroups = array('civicrm_group'     => array( ),
                              'civicrm_mailing'   => array( )
@@ -98,13 +98,6 @@ class CRM_VoiceBroadcast_Form_Group extends CRM_Contact_Form_Task
    */
   public function buildQuickForm()
   {
-
-    //get the context
-//    $context = $this->get('context');
-//    if ($this->_searchBasedMailing) {
-//      $context = 'search';
-//    }
-//    $this->assign('context', $context);
 
     $this->add('text',
                'name',
@@ -244,7 +237,7 @@ class CRM_VoiceBroadcast_Form_Group extends CRM_Contact_Form_Task
 
     $this->assign('groupCount', count($groups));
     $this->assign('mailingCount', count($mailings));
-    if(count($groups) == 0 && count($mailings) == 0 && !$this->_searchBasedMailing) {
+    if(count($groups) == 0 && count($mailings) == 0) {
       CRM_Core_Error::statusBounce("To send a mailing, you must have a valid group of recipients - either at least one group that's a Mailing List or at least one previous mailing or start from a search");
     }
   }
@@ -313,16 +306,16 @@ class CRM_VoiceBroadcast_Form_Group extends CRM_Contact_Form_Task
       // don't create a new mailing if already exists
       $ids['mailing_id'] = $this->get('mailing_id');
 
-      $voiceBroadcastGroupEntities = $entityManager->find('CRM\Voice\Entities\CivicrmVoiceBraodcastGroup', $ids['mailing_id']);
+      $voiceBroadcastGroupEntities = $entityManager->find('CRM\Voice\Entities\CivicrmVoiceBroadcastGroup', $ids['mailing_id']);
 
       if(!empty($voiceBroadcastGroupEntities)) {
 
           foreach($voiceBroadcastGroupEntities as $voiceBroadcastGroupEntity)
           {
-            $entityManager->remove($voiceBroadcastGroupEntity);
+            //$entityManager->remove($voiceBroadcastGroupEntity);
           }
 
-          $entityManager->flush();
+          // $entityManager->flush();
 
       }
     } else {
@@ -440,7 +433,7 @@ class CRM_VoiceBroadcast_Form_Group extends CRM_Contact_Form_Task
 
     $mailing = 'civicrm_voice_broadcast';
     $job     = 'civicrm_voice_broadcast_job';
-    $mg      = 'civicrm_voice_braodcast_group';
+    $mg      = 'civicrm_voice_broadcast_group';
     $eq      = CRM_Mailing_Event_DAO_Queue::getTableName();
     $ed      = CRM_Mailing_Event_DAO_Delivered::getTableName();
     $eb      = CRM_Mailing_Event_DAO_Bounce::getTableName();
@@ -651,7 +644,7 @@ class CRM_VoiceBroadcast_Form_Group extends CRM_Contact_Form_Task
       $params = array_merge($defaults, $params);
 
         //Persist Voice
-        $voiceEntity = new \CRM\Voice\Entities\CivicrmVoiceBroadcast();
+        $voiceEntity = new CRM_Voice_Entities_CivicrmVoiceBroadcast();
         $voiceEntity->setName($params['name']);
         $voiceEntity->setCreatedAt(new DateTime('now'));
         $voiceEntity->setIsTrackCallCost($params['is_track_call_cost']);
@@ -678,7 +671,7 @@ class CRM_VoiceBroadcast_Form_Group extends CRM_Contact_Form_Task
         $entityManager->persist($voiceEntity);
         $entityManager->flush();
 
-        $sql       = "DELETE FROM civicrm_voice_braodcast_group WHERE  voice_id = %1";
+        $sql       = "DELETE FROM civicrm_voice_broadcast_group WHERE  voice_id = %1";
         $sqlParams = array(1 => array($ids['mailing_id'], 'Integer'));
 
         CRM_Core_DAO::executeQuery($sql, $sqlParams);
@@ -698,7 +691,7 @@ class CRM_VoiceBroadcast_Form_Group extends CRM_Contact_Form_Task
           is_array($params[$entity][$type])) {
           foreach ($params[$entity][$type] as $entityId)
           {
-            $voiceBroadCastGroupEntity = new \CRM\Voice\Entities\CivicrmVoiceBraodcastGroup();
+            $voiceBroadCastGroupEntity = new CRM_Voice_Entities_CivicrmVoiceBroadcastGroup();
             $voiceBroadCastGroupEntity->setVoiceId($voiceEntity->getId());
             $voiceBroadCastGroupEntity->setEntityTable(($groupTableName));
             $voiceBroadCastGroupEntity->setGroupType($type);
@@ -709,22 +702,6 @@ class CRM_VoiceBroadcast_Form_Group extends CRM_Contact_Form_Task
         }
       }
     }
-//
-//    if (!empty($params['search_id']) && !empty($params['group_id'])) {
-//      $mg->reset();
-//      $mg->mailing_id   = $mailing->id;
-//      $mg->entity_table = $groupTableName;
-//      $mg->entity_id    = $params['group_id'];
-//      $mg->search_id    = $params['search_id'];
-//      $mg->search_args  = $params['search_args'];
-//      $mg->group_type   = 'Include';
-//      $mg->save();
-//    }
-
-    // check and attach and files as needed
-   // CRM_Core_BAO_File::processAttachment($params, 'civicrm_mailing', $mailing->id);
-
-   // $transaction->commit();
 
     /**
      * create parent job if not yet created
