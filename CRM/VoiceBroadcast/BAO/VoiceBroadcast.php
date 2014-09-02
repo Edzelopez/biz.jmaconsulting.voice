@@ -110,30 +110,12 @@ class CRM_VoiceBroadcast_BAO_VoiceBroadcast
           'sequential' => 1,
         )
       );
-      if (isset($domain['from_email'])) {
-        $domain_email = $domain['from_email'];
-        $domain_name  = $domain['from_name'];
-      }
-      else {
-        $domain_email = 'info@EXAMPLE.ORG';
-        $domain_name  = 'EXAMPLE.ORG';
-      }
       if (!isset($params['created_id'])) {
         $session =& CRM_Core_Session::singleton();
-        $params['created_id'] = $session->get('userID');
+        $params['contact_id'] = $session->get('userID');
       }
       $defaults = array(
-        // load the default config settings for each
-        // eg reply_id, unsubscribe_id need to use
-        // correct template IDs here
-        'override_verp'   => TRUE,
-        'forward_replies' => FALSE,
-        'open_tracking'   => TRUE,
-        'url_tracking'    => TRUE,
         'visibility'      => 'Public Pages',
-        'replyto_email'   => $domain_email,
-        'header_id'       => CRM_Mailing_PseudoConstant::defaultComponent('header_id', ''),
-        'footer_id'       => CRM_Mailing_PseudoConstant::defaultComponent('footer_id', ''),
         'from_email'      => $domain_email,
         'from_name'       => $domain_name,
         'msg_template_id' => NULL,
@@ -234,5 +216,36 @@ class CRM_VoiceBroadcast_BAO_VoiceBroadcast
     }
 
     return $mailing;
+  }
+
+
+/**
+   * function to add the mailings
+   *
+   * @param array $params reference array contains the values submitted by the form
+   * @param array $ids    reference array contains the id
+   *
+   * @access public
+   * @static
+   *
+   * @return object
+   */
+  static function add(&$params, $ids = array()) {
+    $id = CRM_Utils_Array::value('mailing_id', $ids, CRM_Utils_Array::value('id', $params));
+
+    $mailing            = new CRM_Mailing_DAO_Mailing();
+    $mailing->id        = $id;
+    $mailing->domain_id = CRM_Utils_Array::value('domain_id', $params, CRM_Core_Config::domainID());
+
+    if (!isset($params['replyto_email']) &&
+      isset($params['from_email'])
+    ) {
+      $params['replyto_email'] = $params['from_email'];
+    }
+
+    $mailing->copyValues($params);
+
+    $result = $mailing->save();
+    return $result;
   }
 }
