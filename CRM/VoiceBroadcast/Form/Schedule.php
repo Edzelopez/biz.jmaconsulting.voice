@@ -14,12 +14,12 @@ class CRM_VoiceBroadcast_Form_Schedule extends CRM_Core_Form
    */
   public function preProcess()
   {
-    if (CRM_Mailing_Info::workflowEnabled() &&
-      !CRM_Core_Permission::check('schedule mailings')
-    ) {
-      $url = CRM_Utils_System::url('civicrm/mailing/browse/unscheduled', 'reset=1&scheduled=false');
-      CRM_Utils_System::redirect($url);
-    }
+    /* if (CRM_Mailing_Info::workflowEnabled() && */
+    /*   !CRM_Core_Permission::check('schedule mailings') */
+    /* ) { */
+    /*   $url = CRM_Utils_System::url('civicrm/mailing/browse/unscheduled', 'reset=1&scheduled=false'); */
+    /*   CRM_Utils_System::redirect($url); */
+    /* } */
 
     if(CRM_Contact_Form_Search::isSearchContext($this->get('context')) && !$ssID){
       $params = array();
@@ -247,10 +247,8 @@ class CRM_VoiceBroadcast_Form_Schedule extends CRM_Core_Form
       $params['approval_status_id'] = 'null';
     }
 
-    CRM_Core_Error::debug( '$params', $params );
-    exit;
     /* Build the mailing object */
-    CRM_Mailing_BAO_Mailing::create($params, $ids);
+    CRM_VoiceBroadcast_BAO_VoiceBroadcast::create($params, $ids);
 
     //when user perform mailing from search context
     //redirect it to search result CRM-3711.
