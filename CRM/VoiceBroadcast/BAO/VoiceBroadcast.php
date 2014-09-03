@@ -248,4 +248,89 @@ class CRM_VoiceBroadcast_BAO_VoiceBroadcast
     $result = $mailing->save();
     return $result;
   }
+
+/**
+   * Get the rows for a browse operation
+   *
+   * @param int $offset The row number to start from
+   * @param int $rowCount The nmber of rows to return
+   * @param string $sort The sql string that describes the sort order
+   *
+   * @param null $additionalClause
+   * @param null $additionalParams
+   *
+   * @return array            The rows
+   * @access public
+   */
+  public function &getRows($offset, $rowCount, $sort, $additionalClause = NULL, $additionalParams = NULL) {
+    $mailing = 'civicrm_voice_broadcast';
+    $job     = 'civicrm_voice_broadcast_job';
+    $group   = 'civicrm_voice_broadcast_group';
+    $session = CRM_Core_Session::singleton();
+
+    //get all campaigns.
+    $allCampaigns = CRM_Campaign_BAO_Campaign::getCampaigns(NULL, NULL, FALSE, FALSE, FALSE, TRUE);
+
+    // we only care about parent jobs, since that holds all the info on
+    // the mailing
+    $query = "
+            SELECT      $mailing.id,
+                        $mailing.name,
+                        $job.status,
+                        MIN($job.scheduled_date) as scheduled_date,
+                        MIN($job.start_date) as start_date,
+                        MAX($job.end_date) as end_date,
+                        createdContact.sort_name as created_by,
+                        $mailing.contact_id as created_id,
+                        campaign_id
+            FROM        $mailing
+            LEFT JOIN   $job ON ( $job.voice_id = $mailing.id AND $job.is_test = 0 AND $job.parent_id IS NULL )
+            LEFT JOIN   civicrm_contact createdContact ON ( civicrm_voice_broadcast.contact_id = createdContact.id )
+            WHERE       $additionalClause
+            GROUP BY    $mailing.id ";
+
+    if ($sort) {
+      $orderBy = trim($sort->orderBy());
+      if (!empty($orderBy)) {
+        $query .= " ORDER BY $orderBy";
+      }
+    }
+
+    if ($rowCount) {
+      $offset = CRM_Utils_Type::escape($offset, 'Int');
+      $rowCount = CRM_Utils_Type::escape($rowCount, 'Int');
+
+      $query .= " LIMIT $offset, $rowCount ";
+    }
+
+    if (!$additionalParams) {
+      $additionalParams = array();
+    }
+    $dao = CRM_Core_DAO::executeQuery($query, $additionalParams);
+
+    $rows = array();
+    while ($dao->fetch()) {
+      $rows[] = array(
+        'id' => $dao->id,
+        'name' => $dao->name,
+        'status' => $dao->status ? $dao->status : 'Not scheduled',
+        'created_date' => CRM_Utils_Date::customFormat($dao->created_date),
+        'scheduled' => CRM_Utils_Date::customFormat($dao->scheduled_date),
+        'scheduled_iso' => $dao->scheduled_date,
+        'start' => CRM_Utils_Date::customFormat($dao->start_date),
+        'end' => CRM_Utils_Date::customFormat($dao->end_date),
+        'created_by' => $dao->created_by,
+        'scheduled_by' => $dao->scheduled_by,
+        'created_id' => $dao->created_id,
+        'scheduled_id' => $dao->scheduled_id,
+        'archived' => $dao->archived,
+        'approval_status_id' => $dao->approval_status_id,
+        'campaign_id' => $dao->campaign_id,
+        'campaign' => empty($dao->campaign_id) ? NULL : $allCampaigns[$dao->campaign_id],
+        'sms_provider_id' => $dao->sms_provider_id,
+      );
+    }
+    return $rows;
+  }
+
 }
